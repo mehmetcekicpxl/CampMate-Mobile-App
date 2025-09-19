@@ -15,7 +15,7 @@ Email: [Jouw Email]
 [Toon hier minstens 5 nuttige screenshots van je applicatie.]
 
 ## Screencast
-[Voeg een link toe naar je screencast video van je applicatie. Zorg dat zoveel mogelijk features getoond worden!]
+[Voeg een link toe naar de screencast van je applicatie. Zorg dat zoveel mogelijk features getoond worden!]
 
 ## Bronnen
 [Vermeld hier welke bronnen je gebruikt hebt en waarvoor je deze precies gebruikt hebt.]
