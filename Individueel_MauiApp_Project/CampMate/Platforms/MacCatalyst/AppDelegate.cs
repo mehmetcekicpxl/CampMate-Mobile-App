@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace MauiApp
+namespace CampMate
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

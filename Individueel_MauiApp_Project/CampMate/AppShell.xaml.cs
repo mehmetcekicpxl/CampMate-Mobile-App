@@ -1,4 +1,4 @@
-﻿namespace MauiApp
+﻿namespace CampMate
 {
     public partial class AppShell : Shell
     {

@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace MauiApp
+namespace CampMate
 {
     [Application]
     public class MainApplication : MauiApplication
