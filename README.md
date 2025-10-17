@@ -5,7 +5,7 @@ Student: Mehmet Cekic
 
 Email: Mehmet.cekic@student.pxl.be
 
-# [Naam project]
+# [CampMate]
 ## Beschrijving
 [Maak hier een korte maar duidelijk beschrijving van je applicatie]
 
