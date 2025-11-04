@@ -4,11 +4,26 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:CampMate"
+    xmlns:views="clr-namespace:CampMate.Views"
+
     Title="CampMate">
 
     <ShellContent
-        Title="Home"
+        Title="MainPage"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+
+    <FlyoutItem Title="Home" Icon="home.jpg">
+        <ShellContent ContentTemplate="{DataTemplate views:HomePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Profile" Icon="profile.jpg">
+        <ShellContent ContentTemplate="{DataTemplate views:ProfilePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Settings" Icon="settings.jpg">
+        <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" />
+    </FlyoutItem>
+
 
 </Shell>
