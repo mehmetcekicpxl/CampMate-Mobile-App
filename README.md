@@ -1,11 +1,11 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/ZmnpLZnF)
 # C# Mobile - Individuele opdracht
 
-Student: [Jouw Naam]
+Student: Mehmet Cekic
 
-Email: [Jouw Email]
+Email: Mehmet.cekic@student.pxl.be
 
-# [Naam project]
+# [CampMate]
 ## Beschrijving
 [Maak hier een korte maar duidelijk beschrijving van je applicatie]
 
