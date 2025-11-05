@@ -1,0 +1,20 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CampMate.Views.LoginPage"
+             Title="Login">
+
+    <VerticalStackLayout Padding="20">
+        <Label Text="LOGIN" FontSize="28" HorizontalOptions="Center"/>
+
+        <Entry Placeholder="Email" 
+               Text="{Binding UserEmail, Mode=TwoWay, UpdateSourceEventName=TextChanged}" 
+               Keyboard="Email"/>
+
+        <Entry Placeholder="Password" 
+               IsPassword="True" 
+               Text="{Binding UserPassword, Mode=TwoWay, UpdateSourceEventName=TextChanged}"/>
+
+        <Button Text="Login" Clicked="OnLoginClicked"/>
+        <Button Text="Register" Clicked="OnRegisterClicked" BackgroundColor="Green"/>
+    </VerticalStackLayout>
+</ContentPage>

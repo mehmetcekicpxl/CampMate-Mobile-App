@@ -3,27 +3,32 @@
     x:Class="CampMate.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:CampMate"
     xmlns:views="clr-namespace:CampMate.Views"
-
-    Title="CampMate">
+    
+    Title="CampMate"
+    Shell.FlyoutBehavior="Disabled">
+    <ShellContent
+        Route="LoginPage"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Shell.FlyoutItemIsVisible="False"
+        Shell.NavBarIsVisible="False" />
 
     <ShellContent
-        Title="MainPage"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Route="RegisterPage"
+        ContentTemplate="{DataTemplate views:RegisterPage}"
+        Shell.FlyoutItemIsVisible="False"
+        Shell.NavBarIsVisible="True" />
 
-    <FlyoutItem Title="Home" Icon="home.jpg">
-        <ShellContent ContentTemplate="{DataTemplate views:HomePage}" />
+    <FlyoutItem x:Name="HomeFlyout" Title="Home" Icon="home.jpg" Route="HomeRoute" IsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate views:HomePage}" Route="Home" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Profile" Icon="profile.jpg">
-        <ShellContent ContentTemplate="{DataTemplate views:ProfilePage}" />
+    <FlyoutItem x:Name="ProfileFlyout" Title="Profile" Icon="profile.jpg" Route="ProfileRoute" IsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate views:ProfilePage}" Route="Profile" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Settings" Icon="settings.jpg">
-        <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" />
+    <FlyoutItem x:Name="SettingsFlyout" Title="Settings" Icon="settings.jpg" Route="SettingsRoute" IsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" Route="Settings" />
     </FlyoutItem>
-
 
 </Shell>
