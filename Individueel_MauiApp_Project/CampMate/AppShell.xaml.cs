@@ -11,8 +11,8 @@ namespace CampMate
             InitializeComponent();
 
             
-            Routing.RegisterRoute(nameof(Views.LoginPage), typeof(Views.LoginPage));
-            Routing.RegisterRoute(nameof(Views.RegisterPage), typeof(Views.RegisterPage));
+            //Routing.RegisterRoute(nameof(Views.LoginPage), typeof(Views.LoginPage));
+            //Routing.RegisterRoute(nameof(Views.RegisterPage), typeof(Views.RegisterPage));
         }
 
         // als login succesvol is
@@ -21,17 +21,10 @@ namespace CampMate
             
             var shell = Shell.Current as AppShell;
             if (shell == null) return;
+          
 
-           
-            shell.HomeFlyout.IsVisible = true;
-            shell.ProfileFlyout.IsVisible = true;
-            shell.SettingsFlyout.IsVisible = true;
 
-            
-            Shell.SetFlyoutBehavior(shell, FlyoutBehavior.Flyout);
-
-            
-            Shell.Current.GoToAsync("//HomeRoute/Home");
+            Shell.Current.GoToAsync("//MainTabs/HomePage");
         }
     }
 }

@@ -4,7 +4,7 @@ public partial class LoginPage : ContentPage
 {
     // Test gebruiker
     private const string TEST_EMAIL = "test@campmate.com";
-    private const string TEST_PASSWORD = "password123";
+    private const string TEST_PASSWORD = "123";
 
     
     public string UserEmail { get; set; }
