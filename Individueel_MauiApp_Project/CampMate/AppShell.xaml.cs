@@ -10,9 +10,11 @@ namespace CampMate
         {
             InitializeComponent();
 
-            
+
             //Routing.RegisterRoute(nameof(Views.LoginPage), typeof(Views.LoginPage));
             //Routing.RegisterRoute(nameof(Views.RegisterPage), typeof(Views.RegisterPage));
+            Routing.RegisterRoute(nameof(FilterPage), typeof(Views.FilterPage));
+
         }
 
         // als login succesvol is
