@@ -57,4 +57,9 @@ public partial class HomePage : ContentPage
     {
         await Navigation.PushAsync(new FilterPage());
     }
+
+    private void AddNewCampButton_Clicked(object sender, EventArgs e)
+    {
+
+    }
 }

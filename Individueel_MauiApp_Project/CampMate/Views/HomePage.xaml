@@ -20,7 +20,7 @@
 
             <Grid ColumnDefinitions="2*,1*" Padding="1" ColumnSpacing="1" HeightRequest="40">
                 <Button Text="Filters" Grid.Column="0"  BackgroundColor="#2A9D8F" TextColor="White" CornerRadius="50" Clicked="FilterButton_Clicked"/>
-                <Button Text="Add New Camp" Grid.Column="1" BackgroundColor="#E76F51" TextColor="White" CornerRadius="50" />
+                <Button Text="Add New Camp" Grid.Column="1" BackgroundColor="#E76F51" TextColor="White" CornerRadius="50" Clicked="AddNewCampButton_Clicked"/>
             </Grid>
 
 
