@@ -32,7 +32,7 @@
                             <VerticalStackLayout Padding="1" Spacing="1" >
 
 
-                                <Image Source="{Binding ImagePath}" HeightRequest="150" Aspect="AspectFill"/>
+                                <Image Source="{Binding ImagePath}" HeightRequest="151" Aspect="AspectFill"/>
 
 
                                 <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="20" TextColor="Black"/>
