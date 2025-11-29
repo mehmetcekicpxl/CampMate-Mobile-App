@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CampMate.Views.AddCampPage"
+             Title="Camping Toevoegen">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            
+            <Frame CornerRadius="15" BackgroundColor="#1E2A28" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Basisinformatie" TextColor="White" FontAttributes="Bold" FontSize="18"/>
+                    <Label Text="Naam camping *" TextColor="White"/>
+                    <Entry x:Name="NameEntry" Placeholder="Bos end Berg Camping"/>
+                    <Label Text="Stad/Regio *" TextColor="White"/>
+                    <Entry x:Name="LocationEntry" Placeholder="Veluwe"/>
+                    
+                    <Label Text="Facilities" FontAttributes="Bold"/>
+                    <VerticalStackLayout x:Name="FacilitiesCheckBoxGroup" Spacing="10">
+                        <HorizontalStackLayout>
+                            <CheckBox x:Name="ZwembadCheckBox"/>
+                            <Label Text="Zwembad"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <CheckBox x:Name="FietsverhuurCheckBox"/>
+                            <Label Text="Fietsverhuur"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <CheckBox x:Name="ElektriciteitCheckBox"/>
+                            <Label Text="Elektriciteit"/>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <CheckBox x:Name="CafeCheckBox"/>
+                            <Label Text="Cafe"/>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                    
+                </VerticalStackLayout>
+            </Frame>
+
+            
+            <Frame CornerRadius="15" BackgroundColor="#1E2A28" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Foto" TextColor="White" FontAttributes="Bold" FontSize="18"/>
+                    <Button x:Name="PickImageButton" Text="Select Image" Clicked="PickImageButton_Clicked"/>
+                    <Image x:Name="SelectedImage" HeightRequest="200" Aspect="AspectFill"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            
+            <Frame CornerRadius="15" BackgroundColor="#1E2A28" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Prijs en Beoordeling" TextColor="White" FontAttributes="Bold" FontSize="18"/>
+                    <Label Text="Prijs per nacht (€) *" TextColor="White"/>
+                    <Entry x:Name="PriceEntry" Keyboard="Numeric"/>
+                    <Label Text="Aantal sterren" TextColor="White"/>
+                    <Picker x:Name="StarsPicker" Title="Sterne">
+                        <Picker.Items>
+                            <x:String>1</x:String>
+                            <x:String>2</x:String>
+                            <x:String>3</x:String>
+                            <x:String>4</x:String>
+                            <x:String>5</x:String>
+                        </Picker.Items>
+                    </Picker>
+                </VerticalStackLayout>
+            </Frame>
+
+           
+            <Button Text="Camping Toevoegen"
+                    BackgroundColor="#6BC38C"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Clicked="SaveButton_Clicked"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
