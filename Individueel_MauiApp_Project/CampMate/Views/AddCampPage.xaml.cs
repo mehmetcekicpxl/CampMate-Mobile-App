@@ -17,25 +17,25 @@ public partial class AddCampPage : ContentPage
         InitializeComponent();
     }
 
-    // Foto secme
+    
     private async void PickImageButton_Clicked(object sender, EventArgs e)
     {
         _selectedImageFileName = await PickAndSaveImage();
 
         if (!string.IsNullOrEmpty(_selectedImageFileName))
         {
-            // Foto secilmisse, AppDataDirectory’den göster
+            
             var fullPath = Path.Combine(FileSystem.AppDataDirectory, "images", _selectedImageFileName);
             SelectedImage.Source = ImageSource.FromFile(fullPath);
         }
         else
         {
-            // Foto secilmemisse, default bir resim göster
-            SelectedImage.Source = "dotnet_bot.png"; // Resources/Images icinde olmalı
+            
+            SelectedImage.Source = "dotnet_bot.png"; // moet in Resources/Images
         }
     }
 
-    // Cross-platform foto secme ve kaydetme
+    // Cross-platform foto keuzen en opslaan 
     private async Task<string> PickAndSaveImage()
     {
         try
