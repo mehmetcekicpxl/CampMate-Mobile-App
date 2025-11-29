@@ -32,6 +32,14 @@ public partial class HomePage : ContentPage
         {
             ApplyFilter(m.Value);
         });
+
+
+        WeakReferenceMessenger.Default.Register<NewCampMessage>(this, (r, m) =>
+        {
+            AllCamps.Add(m.Value);        // veri saklama için
+            CampList.Add(m.Value);        // UI otomatik güncellenir
+        });
+
     }
 
     private void ApplyFilter(FilterOptions filters)
@@ -55,11 +63,12 @@ public partial class HomePage : ContentPage
 
     private async void FilterButton_Clicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new FilterPage());
+        await Navigation.PushAsync(new FilterPage(AllCamps));
     }
 
-    private void AddNewCampButton_Clicked(object sender, EventArgs e)
+    private async void AddNewCampButton_Clicked(object sender, EventArgs e)
     {
-
+        await Shell.Current.GoToAsync(nameof(AddCampPage));
     }
+
 }

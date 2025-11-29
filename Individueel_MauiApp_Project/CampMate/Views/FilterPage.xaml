@@ -8,12 +8,11 @@
 
             <Label Text="Select Location" FontAttributes="Bold"/>
 
-            <Picker x:Name="LocationPicker">
+            <Picker  x:Name="LocationPicker">
                 <Picker.Items>
-                    <x:String>Antalya</x:String>
-                    <x:String>Istanbul</x:String>
-                    <x:String>Hatay</x:String>
-                    <x:String>Bodrum</x:String>
+                    
+                    
+                    
                 </Picker.Items>
             </Picker>
 

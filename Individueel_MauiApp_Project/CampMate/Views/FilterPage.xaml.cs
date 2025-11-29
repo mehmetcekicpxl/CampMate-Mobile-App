@@ -1,4 +1,4 @@
-using CampMate.Messages;
+﻿using CampMate.Messages;
 using CampMate.Models;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls;
@@ -7,10 +7,23 @@ namespace CampMate.Views
 {
     public partial class FilterPage : ContentPage
     {
-        public FilterPage()
+        private List<CampSite> _allCamps;
+       
+        
+
+        public FilterPage(List<CampSite> allCamps)
         {
             InitializeComponent();
+            _allCamps = allCamps;
+
+            // all cities toevoegen aan LocationPicker
+            var locations = _allCamps.Select(c => c.Location).Distinct().ToList();
+            foreach (var loc in locations)
+            {
+                LocationPicker.Items.Add(loc);
+            }
         }
+
 
         private void ApplyFilters_Clicked(object sender, EventArgs e)
         {
