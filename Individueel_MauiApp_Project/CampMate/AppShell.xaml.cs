@@ -14,7 +14,6 @@ namespace CampMate
             //Routing.RegisterRoute(nameof(Views.LoginPage), typeof(Views.LoginPage));
             //Routing.RegisterRoute(nameof(Views.RegisterPage), typeof(Views.RegisterPage));
             Routing.RegisterRoute(nameof(FilterPage), typeof(Views.FilterPage));
-
             Routing.RegisterRoute(nameof(AddCampPage), typeof(AddCampPage));
 
 
