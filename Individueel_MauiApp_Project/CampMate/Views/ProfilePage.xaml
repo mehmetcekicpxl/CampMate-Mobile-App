@@ -2,12 +2,98 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CampMate.Views.ProfilePage"
-             
+             xmlns:vm="clr-namespace:CampMate.ViewModels"
+             xmlns:models="clr-namespace:CampMate.Models"
+             x:DataType="vm:ProfileViewModel"
+             Title="Mijn Profiel"
              >
-    <VerticalStackLayout>
-        <Label 
-            Text="PROFILE"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <ContentPage.BindingContext>
+        <vm:ProfileViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto, Auto, *, Auto" Padding="20">
+            <StackLayout Grid.Row="0" HorizontalOptions="Center" Margin="0,20,0,30">
+                <Border BackgroundColor="White" 
+                        Stroke="#6B9080"  
+                        StrokeThickness="4" 
+                        StrokeShape="RoundRectangle 120" 
+                        HeightRequest="120" 
+                        WidthRequest="120"
+                        Padding="0"  
+                        HorizontalOptions="Center" VerticalOptions="Center">
+
+                    <Border.Content>
+                        <Grid Margin="-2,-2,0,0">
+
+                            <Border        
+                                Padding="0"               
+                                HeightRequest="115"       WidthRequest="115" 
+                                HorizontalOptions="Center" VerticalOptions="Center"
+                                BackgroundColor="White">    
+                                <Border.Content>
+                                    <Image Source="kampb.jpg"
+                                   Aspect="AspectFill"      
+                                   HorizontalOptions="Fill" VerticalOptions="Fill" />   
+                                </Border.Content>
+                            </Border>
+
+                            <Grid IsVisible="{Binding IsEditing}"
+                  VerticalOptions="Center" HorizontalOptions="Center" Margin="0,0,0,0">
+
+                                <Border BackgroundColor="Beige" StrokeShape="RoundRectangle 50" HeightRequest="80" WidthRequest="80" Padding="0" StrokeThickness="0">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding PickProfilePictureCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <Image Source="photo_camera.png" HeightRequest="60" WidthRequest="60" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+
+                            </Grid>
+
+                        </Grid>
+                    </Border.Content>
+                </Border>   
+                <Label Text="Mijn Profiel" FontSize="Title" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10,0,0" />
+            </StackLayout>
+
+            <Frame Grid.Row="2" CornerRadius="10" Padding="15" Margin="0,0,0,20" BackgroundColor="{AppThemeBinding Light=White, Dark=#36454F}" HasShadow="True">
+                <StackLayout Spacing="15">
+
+                    <Grid ColumnDefinitions="Auto, *">
+                        <Image Source="person_icon" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" Margin="0,0,10,0"/>
+                        <Entry Grid.Column="1" Placeholder="Naam" Text="{Binding CurrentUser.Name}" IsReadOnly="{Binding IsEditing, Converter={StaticResource InverseBoolConverter}}" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto, *">
+                        <Image Source="email_icon" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" Margin="0,0,10,0"/>
+                        <Entry Grid.Column="1" Placeholder="E-mailadres" Text="{Binding CurrentUser.Email}" IsReadOnly="{Binding IsEditing, Converter={StaticResource InverseBoolConverter}}" Keyboard="Email" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto, *">
+                        <Image Source="phone_icon" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" Margin="0,0,10,0"/>
+                        <Entry Grid.Column="1" Placeholder="Telefoonnummer" Text="{Binding CurrentUser.PhoneNumber}" IsReadOnly="{Binding IsEditing, Converter={StaticResource InverseBoolConverter}}" Keyboard="Telephone" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto, *">
+                        <Image Source="location_icon" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" Margin="0,0,10,0"/>
+                        <Entry Grid.Column="1" Placeholder="Woonplaats" Text="{Binding CurrentUser.Location}" IsReadOnly="{Binding IsEditing, Converter={StaticResource InverseBoolConverter}}" />
+                    </Grid>
+                </StackLayout>
+            </Frame>
+
+            <StackLayout Grid.Row="3" Spacing="10">
+                <Button Text="Profiel Bewerken" Command="{Binding EditProfileCommand}"
+                        IsVisible="{Binding IsEditing, Converter={StaticResource InverseBoolConverter}}"
+                        BackgroundColor="#6B9080" TextColor="White" CornerRadius="10" HeightRequest="50" />
+
+                <Button Text="Wijzigingen Opslaan" Command="{Binding SaveChangesCommand}"
+                        IsVisible="{Binding IsEditing}"
+                        BackgroundColor="#6B9080" TextColor="White" CornerRadius="10" HeightRequest="50" />
+
+                <Button Text="Annuleren" Command="{Binding CancelEditCommand}"
+                        IsVisible="{Binding IsEditing}"
+                        BackgroundColor="#9FA09B" TextColor="White" CornerRadius="10" HeightRequest="50" />
+            </StackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>
