@@ -18,7 +18,15 @@
     <Color x:Key="Magenta">#D600AA</Color>
     <Color x:Key="MidnightBlue">#190649</Color>
     <Color x:Key="OffBlack">#1f1f1f</Color>
-
+    
+    <!-- nieuw kleuren  -->
+    <Color x:Key="Error">#B00020</Color>
+    <Color x:Key="DarkGreen">#2D1B47</Color>
+    <Color x:Key="MediumDarkGreen">#42325E</Color>
+    <Color x:Key="Green">#32cd32</Color>
+    <Color x:Key="Gray700">#616161</Color>
+    <!-- nieuw kleuren  -->
+    
     <Color x:Key="Gray100">#E1E1E1</Color>
     <Color x:Key="Gray200">#C8C8C8</Color>
     <Color x:Key="Gray300">#ACACAC</Color>

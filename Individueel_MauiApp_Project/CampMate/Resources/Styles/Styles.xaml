@@ -49,6 +49,51 @@
         </Setter>
     </Style>
 
+    
+   <!--#region -->
+    
+ 
+
+    <Style TargetType="Button" x:Key="OpslaanButtonStyle" >
+        <Setter Property="BackgroundColor" Value="{StaticResource Green}" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HeightRequest" Value="45" />
+    </Style>
+
+    <Style TargetType="Button" x:Key="AnnulerenButtonStyle">
+        <Setter Property="BackgroundColor" Value="{StaticResource Error}" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HeightRequest" Value="45" />
+    </Style>
+
+    <Style TargetType="Button" x:Key="SecurityButtonStyle">
+        <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+        <Setter Property="Margin" Value="0, 5" />
+        <Setter Property="ContentLayout" Value="Left, 20" />
+    </Style>
+
+    <Style TargetType="Button" x:Key="TextSizeButtonStyle">
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="WidthRequest" Value="40" />
+        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource MediumDarkGreen}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+    </Style>
+    
+    <Style TargetType="Entry" x:Key="DarkEntryStyle">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray700}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkGreen}}" />
+        <Setter Property="HeightRequest" Value="45" />
+
+    </Style>
+
+    
+    
+    <!--#endregion-->
+
     <Style TargetType="CheckBox">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
@@ -131,6 +176,8 @@
             </VisualStateGroupList>
         </Setter>
     </Style>
+    
+   
 
     <Style TargetType="ImageButton">
         <Setter Property="Opacity" Value="1" />
