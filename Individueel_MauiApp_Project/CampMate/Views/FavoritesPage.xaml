@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:CampMate.Models"
+             x:Class="CampMate.Views.FavoritesPage"
+             Title="Geregistreerde kampeerplaatsen"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkBackground}}">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <Label Grid.Row="0"
+               Text="Mijn favoriete Camp-locaties"
+               Style="{StaticResource TitleTextStyle}" 
+               TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+               Margin="20, 10, 20, 0"/>
+
+        <CollectionView Grid.Row="1"
+                        x:Name="FavoritesCollectionView"
+                        Margin="10, 10, 10, 0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:CampSite">
+                    <Frame Style="{StaticResource CardFrameStyle}"
+                           Margin="10" Padding="15">
+                        <VerticalStackLayout Spacing="5">
+
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label Grid.Column="0"
+                                       Text="{Binding Name}"
+                                       Style="{StaticResource TitleTextStyle}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+
+                                <ImageButton Grid.Column="1" 
+                                 HeightRequest="30" 
+                                 WidthRequest="30"
+                                 Clicked="RemoveFavorite_Clicked"
+                                 CommandParameter="{Binding .}"
+                                 ToolTipProperties.Text="Verwijderen uit favorieten">
+                                    <ImageButton.Source>
+                                        <FontImageSource FontFamily="MDI"
+                                         Glyph="&#xF05E8;" 
+                                         Color="{StaticResource Error}" 
+                                         Size="28"/>    
+                                    </ImageButton.Source>
+                                </ImageButton>
+                            </Grid>
+
+                            <Label Text="{Binding Location}"
+                                   Style="{StaticResource SmallTextStyle}"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray200}}"/>
+
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

@@ -161,4 +161,8 @@ public partial class SettingsPage : ContentPage
 
     }
 
+    private async void GoToFavorites_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new FavoritesPage());
+    }
 }

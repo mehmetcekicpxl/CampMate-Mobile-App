@@ -91,6 +91,43 @@
 
 
             <Border StrokeShape="RoundRectangle 10" 
+                    Padding="15" 
+                    StrokeThickness="2" 
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource MediumDarkGreen}}">
+
+                <VerticalStackLayout Spacing="15">
+
+                    <Grid ColumnDefinitions="*, Auto">
+                        <StackLayout Grid.Column="0">
+                            <Label Text="Geregistreerde Kampeerplaatsen" 
+                        FontSize="16"
+                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+                            <Label Text="Beheer hier uw favorietenlijsten." 
+                        FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray200}}"/>
+                        </StackLayout>
+                    </Grid>
+
+                    <Button Text="Lijst weergeven"
+                Clicked="GoToFavorites_Clicked"
+                Style="{StaticResource SecurityButtonStyle}"
+                HorizontalOptions="Fill"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}">
+
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="MDI"
+                                  Glyph="&#xF1CE2;" 
+                                  Size="22"
+                                  Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"/>
+                        </Button.ImageSource>
+                    </Button>
+
+                </VerticalStackLayout>
+
+            </Border>
+
+            <Border StrokeShape="RoundRectangle 10" 
 
                     Padding="15" 
 
