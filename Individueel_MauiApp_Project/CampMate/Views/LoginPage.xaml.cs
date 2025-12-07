@@ -4,7 +4,7 @@ public partial class LoginPage : ContentPage
 {
     // Test gebruiker
     private const string TEST_EMAIL = "test@campmate.com";
-    private const string TEST_PASSWORD = "123";
+    public static string TEST_PASSWORD = "123"; //new password is 1234
 
     
     public string UserEmail { get; set; }
@@ -14,6 +14,7 @@ public partial class LoginPage : ContentPage
     {
         InitializeComponent();
         this.BindingContext = this;
+        LogoutMessage.IsVisible = false; //Verberg dit bericht in eerste instantie
     }
 
     private void OnLoginClicked(object sender, EventArgs e)
@@ -41,5 +42,14 @@ public partial class LoginPage : ContentPage
     {
         
         await Shell.Current.GoToAsync($"//{nameof(RegisterPage)}");
+    }
+    public async Task DisplayLogoutMessage()
+    {
+        // Bericht weergeven
+        LogoutMessage.IsVisible = true;
+
+        // Verberg het bericht automatisch na 3 seconden (optioneel)
+        await Task.Delay(3000);
+        LogoutMessage.IsVisible = false;
     }
 }

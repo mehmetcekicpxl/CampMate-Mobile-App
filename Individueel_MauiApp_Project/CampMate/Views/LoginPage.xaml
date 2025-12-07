@@ -16,5 +16,21 @@
 
         <Button Text="Login" Clicked="OnLoginClicked"/>
         <Button Text="Register" Clicked="OnRegisterClicked" BackgroundColor="Green"/>
+        <Border x:Name="LogoutMessage" 
+        IsVisible="False" 
+        BackgroundColor="{StaticResource Error}" 
+        StrokeShape="RoundRectangle 8" 
+        Padding="15" 
+        Margin="0, 40, 0, 0"
+        HorizontalOptions="FillAndExpand">
+            <StackLayout Orientation="Horizontal" Spacing="10">
+                <Image Source="info.png" WidthRequest="20" HeightRequest="20" />
+                <Label Text="Je bent uitgelogd" 
+               TextColor="{StaticResource White}" 
+               VerticalOptions="Center" 
+               FontSize="16" />
+            </StackLayout>
+        </Border>
     </VerticalStackLayout>
+    
 </ContentPage>
