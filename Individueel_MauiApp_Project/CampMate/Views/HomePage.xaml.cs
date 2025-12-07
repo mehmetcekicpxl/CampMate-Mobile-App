@@ -1,7 +1,8 @@
-using CampMate.Messages;
+﻿using CampMate.Messages;
 using CampMate.Models;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace CampMate.Views;
 
@@ -14,9 +15,17 @@ public partial class HomePage : ContentPage
     {
         InitializeComponent();
 
+        // Load favorite camps from storage
+        var favorites = LoadFavoritesFromStorage();
+
+        WeakReferenceMessenger.Default.Register<FavoritesUpdatedMessage>(this, (r, m) =>
+        {
+            ((HomePage)r).UpdateCampListFavorites();
+        });
+
         AllCamps = new List<CampSite>
         {
-            new CampSite { Name="Camp A", Location="Antalya", Stars=4, Facilities="zwembad,fietsverhuur,Elektrisch", Price=50, Image="kampa.jpg" },
+            new CampSite { Name="Camp A", Location="Antalya", Stars=4, Facilities="zwembad,fietsverhuur,Elektrisch", Price=50, Image="kampa.jpg", IsFavorite = favorites.Any(f => f.Name == "Camp A") },
             new CampSite { Name="Camp B", Location="Bodrum", Stars=3, Facilities="Elektrisch", Price=30, Image="kampb.jpg" },
             new CampSite { Name="Camp C", Location="Istanbul", Stars=4, Facilities="cafe,fietsverhuur", Price=50, Image="bg.jpg" },
             new CampSite { Name="Camp D", Location="Antalya", Stars=3, Facilities="Elektrisch", Price=30, Image="dotnet_bot.png" }
@@ -25,6 +34,8 @@ public partial class HomePage : ContentPage
         
         CampList = new ObservableCollection<CampSite>(AllCamps);
         CampListView.ItemsSource = CampList;
+
+        
 
         // WeakReferenceMessenger luister de message van FilterPage!!!
         WeakReferenceMessenger.Default.Register<FilterCriteriaMessage>(this, (r, m) =>
@@ -39,6 +50,45 @@ public partial class HomePage : ContentPage
             CampList.Add(m.Value);        
         });
 
+    }
+
+    // NIEUW: Deze methode voert de synchronisatie uit
+    private async void UpdateCampListFavorites()
+    {
+        // 1. Haal de nieuwe, officiële favorietenlijst op uit SecureStorage
+        var updatedFavorites = await LoadFavoritesFromStorageForHomePage();
+        var favoriteNames = updatedFavorites.Select(f => f.Name).ToHashSet();
+
+        // 2. Loop door ALLE kampen in de Home Page lijst
+        foreach (var camp in CampList)
+        {
+            // Pas de IsFavorite property aan
+            camp.IsFavorite = favoriteNames.Contains(camp.Name);
+        }
+
+        // 3. Forceer de UI om te updaten
+        // Omdat we in een ObservableCollection werken, moet de UI reageren.
+        // Als dit niet gebeurt, moet je de CollectionView.ItemsSource tijdelijk ontkoppelen/herkoppelen, 
+        // of de items handmatig notificeren via INotifyPropertyChanged.
+
+        // DE MEEST BETROUWBARE MAUI TRICK: Forceer de hele lijst om te vernieuwen
+        CampListView.ItemsSource = null;
+        CampListView.ItemsSource = CampList;
+    }
+
+    // NIEUW: Hulpfunctie om favorieten te laden (identiek aan die op FavoritesPage, maar hier nodig)
+    private async Task<List<CampSite>> LoadFavoritesFromStorageForHomePage()
+    {
+        try
+        {
+            string json = await SecureStorage.GetAsync("FavoriteCamps");
+            if (!string.IsNullOrEmpty(json))
+            {
+                return JsonSerializer.Deserialize<List<CampSite>>(json) ?? new List<CampSite>();
+            }
+        }
+        catch { }
+        return new List<CampSite>();
     }
 
     private void ApplyFilter(FilterOptions filters)
@@ -68,6 +118,50 @@ public partial class HomePage : ContentPage
     private async void AddNewCampButton_Clicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(AddCampPage));
+    }
+
+    private void FavoriteButton_Clicked(object sender, EventArgs e)
+    {
+        if (sender is ImageButton button && button.CommandParameter is CampSite camp)
+        {
+           
+            camp.IsFavorite = !camp.IsFavorite;
+
+           
+            var index = CampList.IndexOf(camp);
+            CampList.RemoveAt(index);
+            CampList.Insert(index, camp);
+
+            
+            SaveFavoritesToStorage(AllCamps);
+        }
+    }
+    private void SaveFavoritesToStorage(List<CampSite> camps)
+    {
+        
+        var favoriteCamps = camps.Where(c => c.IsFavorite).ToList();
+
+        
+        string json = System.Text.Json.JsonSerializer.Serialize(favoriteCamps);
+
+        
+        SecureStorage.SetAsync("FavoriteCamps", json);
+    }
+
+    
+    private List<CampSite> LoadFavoritesFromStorage()
+    {
+        try
+        {
+            string json = SecureStorage.GetAsync("FavoriteCamps").Result;
+            if (!string.IsNullOrEmpty(json))
+            {
+                return System.Text.Json.JsonSerializer.Deserialize<List<CampSite>>(json);
+            }
+        }
+        catch {  }
+
+        return new List<CampSite>();
     }
 
 }

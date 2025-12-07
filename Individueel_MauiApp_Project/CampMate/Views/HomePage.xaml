@@ -33,6 +33,45 @@
                         <Frame CornerRadius="10" BorderColor="Green" Margin="5" BackgroundColor="Lavender">
                             <VerticalStackLayout Padding="1" Spacing="1" >
 
+                                <Grid ColumnDefinitions="*,Auto, Auto">
+
+                                    <Label Text="{Binding Name}" 
+                                           Style="{StaticResource TitleTextStyle}" 
+                                           TextColor="Black" 
+                                           Grid.Column="0"/>
+                                    <Label Text="Like" 
+                                           TextColor="Black" 
+                                           Grid.Column="1"/>
+                                    
+
+                                    <Grid Grid.Column="2" HeightRequest="25" WidthRequest="25">
+
+                                        <ImageButton IsVisible="{Binding IsFavorite}"
+                                             Clicked="FavoriteButton_Clicked"
+                                             CommandParameter="{Binding .}">
+                                            <ImageButton.Source>
+                                                <FontImageSource FontFamily="MDI"
+                                                     Glyph="&#xF02D1;" 
+                                                     Color="{Binding IsFavorite, Converter={StaticResource BoolToFavoriteColorConverter}}"
+                                                     Size="25"/>
+                                            </ImageButton.Source>
+                                        </ImageButton>
+
+                                        <ImageButton IsVisible="{Binding IsFavorite, Converter={StaticResource InverseBoolConverter}}"
+                                             Clicked="FavoriteButton_Clicked"
+                                             CommandParameter="{Binding .}">
+                                                                    <ImageButton.Source>
+                                                                        <FontImageSource FontFamily="MDI"
+                                                         Glyph="&#xf02d5;" 
+                                                         Color="{Binding IsFavorite, Converter={StaticResource BoolToFavoriteColorConverter}}"
+                                                         Size="25"/>
+                                            </ImageButton.Source>
+                                        </ImageButton>
+                                       
+
+                                    </Grid>
+
+                                </Grid>
 
                                 <Image Source="{Binding ImagePath}" HeightRequest="151" Aspect="AspectFill"/>
 
