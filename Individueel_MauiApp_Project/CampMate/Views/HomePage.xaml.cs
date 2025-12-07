@@ -1,7 +1,6 @@
 using CampMate.Messages;
 using CampMate.Models;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
 
 namespace CampMate.Views;
@@ -36,8 +35,8 @@ public partial class HomePage : ContentPage
 
         WeakReferenceMessenger.Default.Register<NewCampMessage>(this, (r, m) =>
         {
-            AllCamps.Add(m.Value);        // veri saklama için
-            CampList.Add(m.Value);        // UI otomatik güncellenir
+            AllCamps.Add(m.Value);        
+            CampList.Add(m.Value);        
         });
 
     }
