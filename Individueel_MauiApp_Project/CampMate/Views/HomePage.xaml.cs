@@ -52,31 +52,25 @@ public partial class HomePage : ContentPage
 
     }
 
-    // NIEUW: Deze methode voert de synchronisatie uit
+    //  Deze methode voert de synchronisatie uit
     private async void UpdateCampListFavorites()
     {
-        // 1. Haal de nieuwe, officiële favorietenlijst op uit SecureStorage
+        // 1. Haal de nieuwe, huidige favorietenlijst op uit SecureStorage
         var updatedFavorites = await LoadFavoritesFromStorageForHomePage();
         var favoriteNames = updatedFavorites.Select(f => f.Name).ToHashSet();
 
-        // 2. Loop door ALLE kampen in de Home Page lijst
+        
         foreach (var camp in CampList)
         {
             // Pas de IsFavorite property aan
             camp.IsFavorite = favoriteNames.Contains(camp.Name);
         }
 
-        // 3. Forceer de UI om te updaten
-        // Omdat we in een ObservableCollection werken, moet de UI reageren.
-        // Als dit niet gebeurt, moet je de CollectionView.ItemsSource tijdelijk ontkoppelen/herkoppelen, 
-        // of de items handmatig notificeren via INotifyPropertyChanged.
-
-        // DE MEEST BETROUWBARE MAUI TRICK: Forceer de hele lijst om te vernieuwen
         CampListView.ItemsSource = null;
         CampListView.ItemsSource = CampList;
     }
 
-    // NIEUW: Hulpfunctie om favorieten te laden (identiek aan die op FavoritesPage, maar hier nodig)
+   
     private async Task<List<CampSite>> LoadFavoritesFromStorageForHomePage()
     {
         try
@@ -96,7 +90,7 @@ public partial class HomePage : ContentPage
         
         CampList.Clear();
 
-       // neem filtered list
+      
         var filtered = AllCamps.AsEnumerable();
 
         if (filters.Location is not null)
