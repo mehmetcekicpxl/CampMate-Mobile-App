@@ -23,17 +23,35 @@
         Shell.NavBarIsVisible="True" />-->
 
     <TabBar Route="MainTabs">
-        <Tab Title="Home" Icon="home.png" Route="HomePage">
+        <Tab Title="Home" Route="HomePage"  >
+            <Tab.Icon>
+                <FontImageSource FontFamily="MDI"
+                         Glyph="&#xF02DC;"
+                    Color="Black"
+                         Size="28"/>
+            </Tab.Icon>
             <ShellContent
             
             ContentTemplate="{DataTemplate views:HomePage}" />
         </Tab>
 
-        <Tab Title="Profile" Icon="profile.png"  Route="ProfilePage">
+        <Tab Title="Profile"  Route="ProfilePage">
+            <Tab.Icon>
+                <FontImageSource FontFamily="MDI" 
+              Glyph="&#xF0009;"
+         Color="Black"
+              Size="28"/>
+            </Tab.Icon>
             <ShellContent  ContentTemplate="{DataTemplate views:ProfilePage}" />
         </Tab>
 
-        <Tab Title="Settings" Icon="settings.png" Route="SettingsPage">
+        <Tab Title="Settings"  Route="SettingsPage">
+            <Tab.Icon>
+                <FontImageSource FontFamily="MDI" 
+                 Glyph="&#xF08D6;"
+            Color="Black"
+                 Size="28"/>    
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" />
         </Tab>
     </TabBar>
