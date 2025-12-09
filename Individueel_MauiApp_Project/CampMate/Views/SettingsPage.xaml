@@ -99,7 +99,7 @@
 
                     <Grid ColumnDefinitions="*, Auto">
                         <StackLayout Grid.Column="0">
-                            <Label Text="Geregistreerde Kampeerplaatsen" 
+                            <Label Text="Favorite Kampeerplaatsen" 
                         FontSize="16"
                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
                             <Label Text="Beheer hier uw favorietenlijsten." 
