@@ -16,7 +16,7 @@
          
 
             <Frame CornerRadius="10" HeightRequest="25" BorderColor="Green" BackgroundColor="Beige" Margin="0,0,0,10" >
-                <Entry Placeholder="Search for a name or region" HeightRequest="10" />
+                <Entry Placeholder="Search for a name or region" HeightRequest="10" TextChanged="SearchEntry_TextChanged"/>
 
             </Frame>
 

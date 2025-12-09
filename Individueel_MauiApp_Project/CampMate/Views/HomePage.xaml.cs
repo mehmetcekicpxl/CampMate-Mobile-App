@@ -158,4 +158,23 @@ public partial class HomePage : ContentPage
         return new List<CampSite>();
     }
 
+    private void SearchEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        string searchText = e.NewTextValue?.ToLower() ?? "";
+
+       
+        CampList.Clear();
+
+       
+        var filtered = AllCamps
+            .Where(c =>
+                c.Name.ToLower().Contains(searchText) ||
+                c.Location.ToLower().Contains(searchText)
+            );
+
+        
+        foreach (var camp in filtered)
+            CampList.Add(camp);
+    }
+
 }
