@@ -75,7 +75,7 @@ public partial class HomePage : ContentPage
     {
         try
         {
-            string json = await SecureStorage.GetAsync("FavoriteCamps");
+            string? json = await SecureStorage.GetAsync("FavoriteCamps");
             if (!string.IsNullOrEmpty(json))
             {
                 return JsonSerializer.Deserialize<List<CampSite>>(json) ?? new List<CampSite>();
@@ -136,7 +136,7 @@ public partial class HomePage : ContentPage
         var favoriteCamps = camps.Where(c => c.IsFavorite).ToList();
 
         
-        string json = System.Text.Json.JsonSerializer.Serialize(favoriteCamps);
+        string json = JsonSerializer.Serialize(favoriteCamps);
 
         
         SecureStorage.SetAsync("FavoriteCamps", json);
@@ -147,10 +147,10 @@ public partial class HomePage : ContentPage
     {
         try
         {
-            string json = SecureStorage.GetAsync("FavoriteCamps").Result;
+            string? json = SecureStorage.GetAsync("FavoriteCamps").Result;
             if (!string.IsNullOrEmpty(json))
             {
-                return System.Text.Json.JsonSerializer.Deserialize<List<CampSite>>(json);
+                return JsonSerializer.Deserialize<List<CampSite>>(json) ?? new List<CampSite>();
             }
         }
         catch {  }

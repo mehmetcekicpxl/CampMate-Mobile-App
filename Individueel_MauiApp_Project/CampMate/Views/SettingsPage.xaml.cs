@@ -43,7 +43,10 @@ public partial class SettingsPage : ContentPage
 
             // Donkere modus inschakelen
 
-            Application.Current.UserAppTheme = AppTheme.Dark;
+            if (Application.Current != null)
+            {
+                Application.Current.UserAppTheme = AppTheme.Dark;
+            }
 
         }
 
@@ -53,7 +56,10 @@ public partial class SettingsPage : ContentPage
 
             // Verlichtingsmodus inschakelen
 
-            Application.Current.UserAppTheme = AppTheme.Light;
+            if (Application.Current != null)
+            {
+                Application.Current.UserAppTheme = AppTheme.Light;
+            }
 
         }
 
