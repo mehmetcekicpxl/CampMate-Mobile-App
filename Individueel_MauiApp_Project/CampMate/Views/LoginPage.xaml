@@ -22,7 +22,8 @@
         StrokeShape="RoundRectangle 8" 
         Padding="15" 
         Margin="0, 40, 0, 0"
-        HorizontalOptions="FillAndExpand">
+        HorizontalOptions="Fill"
+        >
             <StackLayout Orientation="Horizontal" Spacing="10">
                 <Image Source="info.png" WidthRequest="20" HeightRequest="20" />
                 <Label Text="Je bent uitgelogd" 

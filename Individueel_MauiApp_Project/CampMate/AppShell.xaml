@@ -10,7 +10,7 @@
     
     
     >
-    <!--<ShellContent
+    <ShellContent
         Route="LoginPage"
         ContentTemplate="{DataTemplate views:LoginPage}"
         
@@ -20,7 +20,7 @@
         Route="RegisterPage"
         ContentTemplate="{DataTemplate views:RegisterPage}"
         
-        Shell.NavBarIsVisible="True" />-->
+        Shell.NavBarIsVisible="True" />
 
     <TabBar Route="MainTabs">
         <Tab Title="Home" Route="HomePage"  >

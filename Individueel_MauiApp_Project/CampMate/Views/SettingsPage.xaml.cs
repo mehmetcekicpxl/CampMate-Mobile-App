@@ -148,16 +148,15 @@ public partial class SettingsPage : ContentPage
 
 
 
-        if (confirm)
+        if (!confirm)
+            return;
 
-        {
-            var loginPage = new LoginPage();
+        var loginPage = new LoginPage();
 
-            Application.Current.MainPage = new NavigationPage(loginPage);
+        Application.Current!.Windows[0].Page = new NavigationPage(loginPage);
 
-            await ((LoginPage)Application.Current.MainPage).DisplayLogoutMessage();
-
-        }
+        // ❗ MainPage üzerinden değil, DIRECT instance üzerinden çağır
+        await loginPage.DisplayLogoutMessage();
 
     }
 
