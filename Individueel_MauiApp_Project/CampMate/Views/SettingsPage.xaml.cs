@@ -155,7 +155,7 @@ public partial class SettingsPage : ContentPage
 
         Application.Current!.Windows[0].Page = new NavigationPage(loginPage);
 
-        // ❗ MainPage üzerinden değil, DIRECT instance üzerinden çağır
+        
         await loginPage.DisplayLogoutMessage();
 
     }
