@@ -51,7 +51,7 @@
             
             <Border StrokeShape="RoundRectangle 15" BackgroundColor="#1E2A28" Padding="15">
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="Prijs en Beoordeling" TextColor="White" FontAttributes="Bold" FontSize="18"/>
+                    <Label Text="Prijs van één nacht" TextColor="White" FontAttributes="Bold" FontSize="18"/>
                     <Label Text="Prijs per nacht (€) *" TextColor="White"/>
                     <Entry x:Name="PriceEntry" Keyboard="Numeric" TextColor="White"/>
                     <!--<Label Text="Aantal sterren" TextColor="White"/>

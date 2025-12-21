@@ -52,4 +52,5 @@ public partial class LoginPage : ContentPage
         await Task.Delay(3000);
         LogoutMessage.IsVisible = false;
     }
+  
 }

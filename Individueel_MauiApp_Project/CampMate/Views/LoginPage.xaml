@@ -8,14 +8,16 @@
 
         <Entry Placeholder="Email" 
                Text="{Binding UserEmail, Mode=TwoWay, UpdateSourceEventName=TextChanged}" 
-               Keyboard="Email" IsSpellCheckEnabled="False" 
-       IsTextPredictionEnabled="False"/>
+               Keyboard="Email"  IsSpellCheckEnabled="False" 
+       IsTextPredictionEnabled="False"
+       />
 
         <Entry Placeholder="Password" 
                IsPassword="True" 
                Margin="0,20,0,20"
                Text="{Binding UserPassword, Mode=TwoWay, UpdateSourceEventName=TextChanged}" IsSpellCheckEnabled="False" 
-       IsTextPredictionEnabled="False"/>
+       IsTextPredictionEnabled="False"
+       />
 
         <Button Text="Login" Clicked="OnLoginClicked" Margin="0,20,0,20"/>
         <Button Text="Register" Clicked="OnRegisterClicked" BackgroundColor="Green"/>
