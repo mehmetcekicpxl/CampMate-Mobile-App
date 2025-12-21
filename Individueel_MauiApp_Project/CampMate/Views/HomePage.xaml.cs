@@ -25,10 +25,10 @@ public partial class HomePage : ContentPage
 
         AllCamps = new List<CampSite>
         {
-            new CampSite { Name="Camp A", Location="Antalya", Stars=4, Facilities="zwembad,fietsverhuur,Elektrisch", Price=50, Image="kampa.jpg", IsFavorite = favorites.Any(f => f.Name == "Camp A") },
-            new CampSite { Name="Camp B", Location="Bodrum", Stars=3, Facilities="Elektrisch", Price=30, Image="kampb.jpg" },
-            new CampSite { Name="Camp C", Location="Istanbul", Stars=4, Facilities="cafe,fietsverhuur", Price=50, Image="bg.jpg" },
-            new CampSite { Name="Camp D", Location="Antalya", Stars=3, Facilities="Elektrisch", Price=30, Image="dotnet_bot.png" }
+            new CampSite { Name="City Camp Valkenburg", Location="Valkenburg,Nederlands", Stars=4, Facilities="zwembad,fietsverhuur,Elektrisch", Price=50, Image="kampa.jpg", IsFavorite = favorites.Any(f => f.Name == "Camp A") },
+            new CampSite { Name="Camping Jungfrau", Location="Lauterbrunnen, Zwitserland", Stars=3, Facilities="Elektrisch", Price=30, Image="kampb.jpg" },
+            new CampSite { Name="Camping Village Roma Capitol", Location="Rome, Italië", Stars=4, Facilities="cafe,fietsverhuur", Price=50, Image="bg.jpg" },
+            new CampSite { Name="Camping De La Seine", Location="Jumièges, Frankrijk", Stars=3, Facilities="Elektrisch", Price=30, Image="kampa.jpg" }
         };
 
         

@@ -19,15 +19,15 @@
                         Margin="10, 10, 10, 0">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:CampSite">
-                    <Frame Style="{StaticResource CardFrameStyle}"
-                           Margin="10" Padding="15">
+                    <Border Style="{StaticResource CardFrameStyle}"
+                            Margin="10" Padding="15" BackgroundColor="PowderBlue">
                         <VerticalStackLayout Spacing="5">
 
                             <Grid ColumnDefinitions="*, Auto">
                                 <Label Grid.Column="0"
                                        Text="{Binding Name}"
                                        Style="{StaticResource TitleTextStyle}"
-                                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Black}}"/>
 
                                 <ImageButton Grid.Column="1" 
                                  HeightRequest="30" 
@@ -46,10 +46,10 @@
 
                             <Label Text="{Binding Location}"
                                    Style="{StaticResource SmallTextStyle}"
-                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray200}}"/>
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Black}}"/>
 
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

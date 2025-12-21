@@ -15,10 +15,9 @@
 
          
 
-            <Frame CornerRadius="10" HeightRequest="25" BorderColor="Green" BackgroundColor="Beige" Margin="0,0,0,10" >
-                <Entry Placeholder="Search for a name or region" HeightRequest="10" TextChanged="SearchEntry_TextChanged"/>
-
-            </Frame>
+            <Border Stroke="Green" BackgroundColor="Beige" StrokeShape="RoundRectangle 10" Margin="0,0,0,10" HeightRequest="25">
+                <Entry Placeholder="Search for a name or region" HeightRequest="10" TextColor="Black" TextChanged="SearchEntry_TextChanged"/>
+            </Border>
 
             <Grid ColumnDefinitions="2*,1*" Padding="1" ColumnSpacing="1" HeightRequest="40">
                 <Button Text="Filters" Grid.Column="0"  BackgroundColor="#2A9D8F" TextColor="White" CornerRadius="50" Clicked="FilterButton_Clicked"/>
@@ -30,7 +29,7 @@
             <CollectionView x:Name="CampListView" Margin="0,10,0,0">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame CornerRadius="10" BorderColor="Green" Margin="5" BackgroundColor="Lavender">
+                        <Border Stroke="Green" StrokeShape="RoundRectangle 10" Margin="5" BackgroundColor="Lavender">
                             <VerticalStackLayout Padding="1" Spacing="1" >
 
                                 <Grid ColumnDefinitions="*,Auto, Auto">
@@ -93,7 +92,7 @@
 
 
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

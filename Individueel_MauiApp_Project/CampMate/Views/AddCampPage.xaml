@@ -8,55 +8,55 @@
         <VerticalStackLayout Padding="20" Spacing="20">
 
             
-            <Frame CornerRadius="15" BackgroundColor="#1E2A28" Padding="15">
+            <Border StrokeShape="RoundRectangle 15" BackgroundColor="#1E2A28" Padding="15">
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Basisinformatie" TextColor="White" FontAttributes="Bold" FontSize="18"/>
                     <Label Text="Naam camping *" TextColor="White"/>
-                    <Entry x:Name="NameEntry" Placeholder="Bos end Berg Camping"/>
+                    <Entry x:Name="NameEntry" Placeholder="Bos end Berg Camping" TextColor="White"/>
                     <Label Text="Stad/Regio *" TextColor="White"/>
-                    <Entry x:Name="LocationEntry" Placeholder="Veluwe"/>
-                    
-                    <Label Text="Facilities" FontAttributes="Bold"/>
+                    <Entry x:Name="LocationEntry" Placeholder="Veluwe" TextColor="White"/>
+
+                    <Label Text="Facilities" FontAttributes="Bold" TextColor="White"/>
                     <VerticalStackLayout x:Name="FacilitiesCheckBoxGroup" Spacing="10">
                         <HorizontalStackLayout>
                             <CheckBox x:Name="ZwembadCheckBox"/>
-                            <Label Text="Zwembad"/>
+                            <Label Text="Zwembad" TextColor="White"/>
                         </HorizontalStackLayout>
                         <HorizontalStackLayout>
                             <CheckBox x:Name="FietsverhuurCheckBox"/>
-                            <Label Text="Fietsverhuur"/>
+                            <Label Text="Fietsverhuur" TextColor="White"/>
                         </HorizontalStackLayout>
                         <HorizontalStackLayout>
                             <CheckBox x:Name="ElektriciteitCheckBox"/>
-                            <Label Text="Elektriciteit"/>
+                            <Label Text="Elektriciteit" TextColor="White"/>
                         </HorizontalStackLayout>
                         <HorizontalStackLayout>
                             <CheckBox x:Name="CafeCheckBox"/>
-                            <Label Text="Cafe"/>
+                            <Label Text="Cafe" TextColor="White"/>
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                     
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             
-            <Frame CornerRadius="15" BackgroundColor="#1E2A28" Padding="15">
+            <Border StrokeShape="RoundRectangle 15" BackgroundColor="#1E2A28" Padding="15">
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Foto" TextColor="White" FontAttributes="Bold" FontSize="18"/>
                     <Button x:Name="PickImageButton" Text="Select Image" Clicked="PickImageButton_Clicked"/>
                     <Image x:Name="SelectedImage" HeightRequest="200" Aspect="AspectFill"/>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             
-            <Frame CornerRadius="15" BackgroundColor="#1E2A28" Padding="15">
+            <Border StrokeShape="RoundRectangle 15" BackgroundColor="#1E2A28" Padding="15">
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Prijs en Beoordeling" TextColor="White" FontAttributes="Bold" FontSize="18"/>
                     <Label Text="Prijs per nacht (€) *" TextColor="White"/>
-                    <Entry x:Name="PriceEntry" Keyboard="Numeric"/>
+                    <Entry x:Name="PriceEntry" Keyboard="Numeric" TextColor="White"/>
                     <Label Text="Aantal sterren" TextColor="White"/>
-                    <Picker x:Name="StarsPicker" Title="Sterne">
-                        <Picker.Items>
+                    <Picker x:Name="StarsPicker" Title="Sterne" TextColor="White">
+                        <Picker.Items >
                             <x:String>1</x:String>
                             <x:String>2</x:String>
                             <x:String>3</x:String>
@@ -65,7 +65,7 @@
                         </Picker.Items>
                     </Picker>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
            
             <Button Text="Camping Toevoegen"

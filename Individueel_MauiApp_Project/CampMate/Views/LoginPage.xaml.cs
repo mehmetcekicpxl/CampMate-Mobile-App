@@ -3,7 +3,7 @@
 public partial class LoginPage : ContentPage
 {
     // Test gebruiker
-    private const string TEST_EMAIL = "test@campmate.com";
+    private const string TEST_EMAIL = "campmate.com";
     public static string TEST_PASSWORD = "123"; //new password is 1234
 
     

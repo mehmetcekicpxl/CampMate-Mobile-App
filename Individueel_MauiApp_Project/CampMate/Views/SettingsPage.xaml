@@ -113,13 +113,13 @@
                 Style="{StaticResource SecurityButtonStyle}"
                 HorizontalOptions="Fill"
                 TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}">
+               >
 
                         <Button.ImageSource>
                             <FontImageSource FontFamily="MDI"
                                   Glyph="&#xF1CE2;" 
                                   Size="22"
-                                  Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"/>
+                                  Color="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}"/>
                         </Button.ImageSource>
                     </Button>
 
