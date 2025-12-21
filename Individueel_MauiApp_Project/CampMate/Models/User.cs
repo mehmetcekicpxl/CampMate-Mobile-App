@@ -16,7 +16,7 @@ namespace CampMate.Models
         public User()
         {
             Name="Mehmet";
-            Email= "mehmetcekic@gmail.com";
+            Email= "campmate.com";
             PhoneNumber= "+32 666 666 666";
             Location= "Genk";
         }

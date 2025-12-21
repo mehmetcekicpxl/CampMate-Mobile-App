@@ -7,28 +7,49 @@
     <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center">
 
         <Label Text="Maak een nieuw account aan" 
-               FontSize="Title" 
-               HorizontalOptions="Center" 
-               TextColor="{StaticResource Primary}"/>
+           FontSize="28" 
+           HorizontalOptions="Center" 
+           TextColor="{StaticResource Primary}"
+           Margin="0,0,0,20"/>
 
-        <Entry Placeholder="E-mail Adress" 
-               Keyboard="Email" 
-               Margin="0, 10, 0, 0"/>
+        <Entry x:Name="NameEntry" 
+           Placeholder="Naam"
+           IsSpellCheckEnabled="False"
+           IsTextPredictionEnabled="False"/>
 
-        <Entry Placeholder="wachtwoord " 
-               IsPassword="True"/>
+        <Entry x:Name="EmailEntry" 
+           Placeholder="E-mail Adress" 
+           Keyboard="Email"
+           IsSpellCheckEnabled="False"
+           IsTextPredictionEnabled="False"/>
 
-        <Entry Placeholder="wachtwoord herhalen" 
-               IsPassword="True"/>
+        <Entry x:Name="PhoneEntry" 
+           Placeholder="Telefoonnummer" 
+           Keyboard="Telephone"
+           IsSpellCheckEnabled="False"
+           IsTextPredictionEnabled="False"/>
+
+        <Entry x:Name="LocationEntry" 
+           Placeholder="Woonplaats"
+           IsSpellCheckEnabled="False"
+           IsTextPredictionEnabled="False"/>
+
+        <Entry x:Name="PasswordEntry" 
+           Placeholder="Wachtwoord" 
+           IsPassword="True"/>
+
+        <Entry x:Name="ConfirmPasswordEntry" 
+           Placeholder="Wachtwoord herhalen" 
+           IsPassword="True"/>
 
         <Button Text="Registeren" 
-                Clicked="OnRegisterCompleted" 
-                Margin="0, 20, 0, 0"/>
+            Clicked="OnRegisterCompleted" 
+            Margin="0, 20, 0, 0"
+            BackgroundColor="{StaticResource Primary}"/>
 
         <Button Text="Ga Naar Login" 
-                Clicked="OnBackToLoginClicked" 
-                Style="{StaticResource TextButton}" 
-                />
+            Clicked="OnBackToLoginClicked" 
+            Style="{StaticResource TextButton}" />
 
     </VerticalStackLayout>
 

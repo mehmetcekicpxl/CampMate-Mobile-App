@@ -8,13 +8,15 @@
 
         <Entry Placeholder="Email" 
                Text="{Binding UserEmail, Mode=TwoWay, UpdateSourceEventName=TextChanged}" 
-               Keyboard="Email"/>
+               Keyboard="Email" IsSpellCheckEnabled="False" 
+       IsTextPredictionEnabled="False"/>
 
         <Entry Placeholder="Password" 
                IsPassword="True" 
-               Text="{Binding UserPassword, Mode=TwoWay, UpdateSourceEventName=TextChanged}"/>
+               Text="{Binding UserPassword, Mode=TwoWay, UpdateSourceEventName=TextChanged}" IsSpellCheckEnabled="False" 
+       IsTextPredictionEnabled="False"/>
 
-        <Button Text="Login" Clicked="OnLoginClicked"/>
+        <Button Text="Login" Clicked="OnLoginClicked" Margin="0,0,0,20"/>
         <Button Text="Register" Clicked="OnRegisterClicked" BackgroundColor="Green"/>
         <Border x:Name="LogoutMessage" 
         IsVisible="False" 
