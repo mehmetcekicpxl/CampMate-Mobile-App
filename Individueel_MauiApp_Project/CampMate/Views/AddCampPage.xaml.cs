@@ -79,8 +79,8 @@ public partial class AddCampPage : ContentPage
             Location = LocationEntry.Text,
             Facilities = GetSelectedFacilities(),
             Image = string.IsNullOrEmpty(_selectedImageFileName) ? "dotnet_bot.png" : _selectedImageFileName,
-            Price = int.TryParse(PriceEntry.Text, out var price) ? price : 0,
-            Stars = StarsPicker.SelectedItem != null ? int.Parse(StarsPicker.SelectedItem.ToString()) : 0
+            Price = int.TryParse(PriceEntry.Text, out var price) ? price : 0
+            //Stars = StarsPicker.SelectedItem != null ? int.Parse(StarsPicker.SelectedItem.ToString()) : 0
         };
 
         
@@ -96,7 +96,7 @@ public partial class AddCampPage : ContentPage
         NameEntry.Text = LocationEntry.Text  = PriceEntry.Text = "";
         _selectedImageFileName = null;
         SelectedImage.Source = null;
-        StarsPicker.SelectedItem = null;
+        //StarsPicker.SelectedItem = null;
 
         // ga naar de vorige pagina(HomePage)
         await Shell.Current.GoToAsync("..");

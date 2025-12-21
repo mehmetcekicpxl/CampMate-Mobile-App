@@ -54,7 +54,7 @@
                     <Label Text="Prijs en Beoordeling" TextColor="White" FontAttributes="Bold" FontSize="18"/>
                     <Label Text="Prijs per nacht (€) *" TextColor="White"/>
                     <Entry x:Name="PriceEntry" Keyboard="Numeric" TextColor="White"/>
-                    <Label Text="Aantal sterren" TextColor="White"/>
+                    <!--<Label Text="Aantal sterren" TextColor="White"/>
                     <Picker x:Name="StarsPicker" Title="Sterne" TextColor="White">
                         <Picker.Items >
                             <x:String>1</x:String>
@@ -63,7 +63,7 @@
                             <x:String>4</x:String>
                             <x:String>5</x:String>
                         </Picker.Items>
-                    </Picker>
+                    </Picker>-->
                 </VerticalStackLayout>
             </Border>
 
