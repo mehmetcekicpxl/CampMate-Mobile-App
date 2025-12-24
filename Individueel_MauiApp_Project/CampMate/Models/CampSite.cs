@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CampMate.Models
 {
-    public class CampSite : INotifyPropertyChanged // UI'ın puan değişimini görmesi için
+    public class CampSite : INotifyPropertyChanged // Om de puntenwijziging van de UI te zien
     {
         
             public string Name { get; set; }
