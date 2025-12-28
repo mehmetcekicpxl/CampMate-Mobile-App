@@ -17,7 +17,12 @@ public partial class ProfilePage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        // Laad de actuele gegevens telkens wanneer de pagina wordt weergegeven.
-        await _viewModel.LoadUserDataAsync();
+
+        
+        if (BindingContext is ProfileViewModel vm)
+        {
+           
+            await vm.LoadUserDataAsync();
+        }
     }
 }

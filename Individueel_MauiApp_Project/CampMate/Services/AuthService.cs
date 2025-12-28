@@ -174,5 +174,38 @@ namespace CampMate.Services
                 return false;
             }
         }
+
+
+        // Methode om foto te uploaden
+        public async Task<string?> UploadImageAsync(FileResult fileResult)
+        {
+            try
+            {
+               
+                var stream = await fileResult.OpenReadAsync();
+
+               
+                var content = new MultipartFormDataContent();
+
+               
+                content.Add(new StreamContent(stream), "file", fileResult.FileName);
+
+               
+                var response = await _httpClient.PostAsync("upload", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    
+                    var result = await response.Content.ReadFromJsonAsync<JsonElement>();
+                    return result.GetProperty("imageName").GetString();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Upload fout: {ex.Message}");
+            }
+
+            return null; 
+        }
     }
 }

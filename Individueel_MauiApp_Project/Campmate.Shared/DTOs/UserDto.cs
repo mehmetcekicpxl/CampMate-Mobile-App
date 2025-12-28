@@ -14,5 +14,7 @@ namespace CampMate.Shared.DTOs
         public string Token { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
+       
+        public string ProfileImage { get; set; } = "profile.png";
     }
 }

@@ -19,5 +19,7 @@ namespace CampMate.Shared.DTOs
 
        
         public string Location { get; set; } = string.Empty;
+
+        public string ProfileImage { get; set; }
     }
 }

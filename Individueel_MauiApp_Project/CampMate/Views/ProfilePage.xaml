@@ -30,11 +30,15 @@
                                 HorizontalOptions="Center" VerticalOptions="Center"
                                 BackgroundColor="White">    
                                 <Border.Content>
-                                    <Image Source="kampb.jpg"
-                                   Aspect="AspectFill"      
-                                   HorizontalOptions="Fill" VerticalOptions="Fill" />   
+                                    <Image Source="{Binding ProfileImageUrl}"
+                                           Aspect="AspectFill"      
+                                           HorizontalOptions="Fill" 
+                                           VerticalOptions="Fill" />  
                                 </Border.Content>
                             </Border>
+
+
+                            
 
                             <Grid IsVisible="{Binding IsEditing}"
                   VerticalOptions="Center" HorizontalOptions="Center" Margin="0,0,0,0">

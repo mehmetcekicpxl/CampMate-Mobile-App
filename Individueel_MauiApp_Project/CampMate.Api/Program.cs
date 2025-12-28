@@ -54,6 +54,7 @@ namespace CampMate.Api
 
             app.UseCors();
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 

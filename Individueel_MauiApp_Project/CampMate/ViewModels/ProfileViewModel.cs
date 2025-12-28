@@ -13,6 +13,28 @@ namespace CampMate.ViewModels
 {
     public partial class ProfileViewModel : ObservableObject
     {
+
+        // De basis-URL van  API (voor Android Emulator is dit 10.0.2.2)
+        
+        private const string BaseUrl = "http://10.0.2.2:5225";
+
+       
+        public string ProfileImageUrl
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(CurrentUser.ProfileImage) || CurrentUser.ProfileImage == "profile.png")
+                {
+                    return "profile.png"; 
+                }
+
+               
+                return $"{BaseUrl}/images/{CurrentUser.ProfileImage}";
+            }
+        }
+
+
+
         private readonly AuthService _authService;
 
         [ObservableProperty]
@@ -29,6 +51,9 @@ namespace CampMate.ViewModels
             IsEditing = false; 
         }
 
+
+
+
         public async Task LoadUserDataAsync()
         {
             var userDto = await _authService.GetCurrentUserAsync();
@@ -42,8 +67,10 @@ namespace CampMate.ViewModels
                     Name = userDto.Name,
                     Email = userDto.Email,
                     PhoneNumber = userDto.PhoneNumber,
-                    Location = userDto.Location
+                    Location = userDto.Location,
+                    ProfileImage = userDto.ProfileImage
                 };
+                OnPropertyChanged(nameof(ProfileImageUrl));
             }
         }
 
@@ -65,7 +92,8 @@ namespace CampMate.ViewModels
                 Name = CurrentUser.Name,
                 Email = CurrentUser.Email,
                 PhoneNumber = CurrentUser.PhoneNumber,
-                Location = CurrentUser.Location
+                Location = CurrentUser.Location,
+                ProfileImage = CurrentUser.ProfileImage
             };
 
             // 2. Roep de service aan om de update naar de API te sturen
@@ -92,21 +120,38 @@ namespace CampMate.ViewModels
             
             IsEditing = false;
         }
-        
 
-        [RelayCommand] 
+
+        [RelayCommand]
         async Task PickProfilePicture()
         {
-            // om een profielfoto te kiezen
-            var result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
+            try
             {
-                Title = "Kies een profielfoto"
-            });
+                // 1. Foto kiezen uit de galerij
+                var result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
+                {
+                    Title = "Kies een profielfoto"
+                });
 
-            if (result != null)
+                if (result != null)
+                {
+                    string? uploadedFileName = await _authService.UploadImageAsync(result);
+
+                    if (!string.IsNullOrEmpty(uploadedFileName))
+                    {
+                        
+                        CurrentUser.ProfileImage = uploadedFileName;
+
+                        
+                        OnPropertyChanged(nameof(ProfileImageUrl));
+
+                       
+                    }
+                }
+            }
+            catch (Exception ex)
             {
-               
-                Console.WriteLine($"De path: {result.FullPath}");
+                Console.WriteLine($"Foto selecteren fout: {ex.Message}");
             }
         }
     }

@@ -72,7 +72,8 @@ namespace CampMate.Api.Controllers
                 Email = user.Email,
                 Token = "dummy-token",
                 PhoneNumber = user.PhoneNumber,
-                Location = user.Location
+                Location = user.Location,
+                ProfileImage = user.ProfileImage
             });
         }
 
@@ -109,11 +110,11 @@ namespace CampMate.Api.Controllers
 
             if (user == null)
             {
-                return NotFound("Gebruiker niet gevonden."); // Kullanıcı yoksa hata dön
+                return NotFound("Gebruiker niet gevonden.");
             }
 
             // 2. Controleer of het nieuwe e-mailadres al in gebruik is door iemand anders
-            // (Als de gebruiker zijn eigen e-mailadres houdt, is dit geen probleem)
+            
             if (user.Email != updateDto.Email)
             {
                 var emailExists = await _context.Users.AnyAsync(u => u.Email == updateDto.Email);
@@ -129,6 +130,14 @@ namespace CampMate.Api.Controllers
             user.PhoneNumber = updateDto.PhoneNumber;
             user.Location = updateDto.Location;
 
+            if (!string.IsNullOrEmpty(updateDto.ProfileImage))
+            {
+                user.ProfileImage = updateDto.ProfileImage;
+            }
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
             // 4. Wijzigingen opslaan in de database
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
@@ -141,7 +150,8 @@ namespace CampMate.Api.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Location = user.Location,
-                Token = "Token-blijft-hetzelfde" // Token değişmedi
+                ProfileImage = user.ProfileImage,
+                Token = "Token-blijft-hetzelfde"
             });
         }
     }

@@ -1,4 +1,5 @@
 ﻿using CampMate.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CampMate.Api.Data
 {
@@ -6,10 +7,11 @@ namespace CampMate.Api.Data
     {
         public static void Initialize(CampMateContext context)
         {
-            
-            context.Database.EnsureCreated();
 
-           
+            // context.Database.EnsureCreated();
+            context.Database.Migrate();
+
+
             if (context.CampSites.Any())
             {
                 return; 
