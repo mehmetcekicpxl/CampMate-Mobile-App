@@ -1,5 +1,6 @@
 ﻿using CampMate.Models;
 using CampMate.Services;
+using CampMate.Shared.DTOs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -52,16 +53,37 @@ namespace CampMate.ViewModels
             IsEditing = true;
         }
 
+
         [RelayCommand]
         async Task SaveChanges()
         {
-           
-            Console.WriteLine($"Gebruiker upgedated: {CurrentUser.Name}, {CurrentUser.Email}, {CurrentUser.Location},{CurrentUser.PhoneNumber}");
+            if (CurrentUser == null) return;
 
-            IsEditing = false;
+            // 1. Maak het DTO-object klaar met de nieuwe gegevens van het scherm
+            var updateDto = new UserUpdateDto
+            {
+                Name = CurrentUser.Name,
+                Email = CurrentUser.Email,
+                PhoneNumber = CurrentUser.PhoneNumber,
+                Location = CurrentUser.Location
+            };
 
-            
-            await Application.Current.MainPage.DisplayAlert("succes", "Profile gegevens succes upgedeted !", "OK");
+            // 2. Roep de service aan om de update naar de API te sturen
+            bool success = await _authService.UpdateUserProfileAsync(CurrentUser.Id, updateDto);
+
+            if (success)
+            {
+                IsEditing = false; 
+                await Application.Current.MainPage.DisplayAlert("Succes", "Je profiel is succesvol bijgewerkt!", "OK");
+
+                
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Fout", "Update mislukt. Controleer je gegevens (bijv. e-mail).", "OK");
+
+                
+            }
         }
 
         [RelayCommand]

@@ -100,5 +100,49 @@ namespace CampMate.Api.Controllers
 
             return Ok("Wachtwoord succesvol gewijzigd.");
         }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateProfile(int id, [FromBody] UserUpdateDto updateDto)
+        {
+            // 1. Zoek de gebruiker in de database via ID
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound("Gebruiker niet gevonden."); // Kullanıcı yoksa hata dön
+            }
+
+            // 2. Controleer of het nieuwe e-mailadres al in gebruik is door iemand anders
+            // (Als de gebruiker zijn eigen e-mailadres houdt, is dit geen probleem)
+            if (user.Email != updateDto.Email)
+            {
+                var emailExists = await _context.Users.AnyAsync(u => u.Email == updateDto.Email);
+                if (emailExists)
+                {
+                    return BadRequest("Dit e-mailadres is al in gebruik.");
+                }
+            }
+
+            // 3. Update de gegevens
+            user.Name = updateDto.Name;
+            user.Email = updateDto.Email;
+            user.PhoneNumber = updateDto.PhoneNumber;
+            user.Location = updateDto.Location;
+
+            // 4. Wijzigingen opslaan in de database
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            // 5. Stuur de bijgewerkte gegevens terug (Handig voor de app)
+            return Ok(new UserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Location = user.Location,
+                Token = "Token-blijft-hetzelfde" // Token değişmedi
+            });
+        }
     }
 }

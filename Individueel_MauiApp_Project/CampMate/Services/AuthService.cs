@@ -35,7 +35,7 @@ namespace CampMate.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Login Hatası: {ex.Message}");
+                Console.WriteLine($"Login Fout: {ex.Message}");
             }
             return null;
         }
@@ -49,7 +49,7 @@ namespace CampMate.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Register Hatası: {ex.Message}");
+                Console.WriteLine($"Register Fout: {ex.Message}");
                 return false;
             }
         }
@@ -94,6 +94,60 @@ namespace CampMate.Services
         public void Logout()
         {
             SecureStorage.Remove("CurrentUser");
+        }
+
+
+        // Methode om gebruikersprofiel bij te werken
+        public async Task<bool> UpdateUserProfileAsync(int userId, UserUpdateDto updateData)
+        {
+            try
+            {
+                // 1. Stuur een PUT-verzoek naar de API (Database update)
+                var response = await _httpClient.PutAsJsonAsync($"auth/update/{userId}", updateData);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    
+
+                   
+                    // We halen de huidige opgeslagen gebruiker op.
+                    
+                    var json = await SecureStorage.GetAsync("CurrentUser");
+
+                    if (!string.IsNullOrEmpty(json))
+                    {
+                        var userDto = JsonSerializer.Deserialize<UserDto>(json);
+
+                        if (userDto != null)
+                        {
+                            
+                            userDto.Name = updateData.Name;
+                            userDto.Email = updateData.Email;
+                            userDto.PhoneNumber = updateData.PhoneNumber;
+                            userDto.Location = updateData.Location;
+
+                            // De bijgewerkte gebruiker terug opslaan in SecureStorage  de app de nieuwe gegevens direct ziet zonder uit te loggen.
+
+                            var newJson = JsonSerializer.Serialize(userDto);
+                            await SecureStorage.SetAsync("CurrentUser", newJson);
+                        }
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    // Foutmelding lezen
+                    var errorMsg = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Update fout: {errorMsg}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Er is een fout opgetreden tijdens het updaten: {ex.Message}");
+                return false;
+            }
         }
     }
 }
