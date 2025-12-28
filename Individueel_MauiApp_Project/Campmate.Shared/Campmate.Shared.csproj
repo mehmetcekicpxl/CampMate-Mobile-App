@@ -45,6 +45,7 @@
     <Compile Include="DTOs\CampSiteDto.cs" />
     <Compile Include="DTOs\ChangePasswordDto.cs" />
     <Compile Include="DTOs\CommentDto.cs" />
+    <Compile Include="DTOs\CreateCommentDto.cs" />
     <Compile Include="DTOs\LoginDto.cs" />
     <Compile Include="DTOs\RegisterDto.cs" />
     <Compile Include="DTOs\UserDto.cs" />

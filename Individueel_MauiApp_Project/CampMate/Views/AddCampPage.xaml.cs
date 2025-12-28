@@ -87,7 +87,7 @@ public partial class AddCampPage : ContentPage
        
         WeakReferenceMessenger.Default.Send(new NewCampMessage(dto));
 
-        await DisplayAlert("Başarılı", "Kamp alanı eklendi!", "Tamam");
+        await DisplayAlert("Succesvol", "Campingterrein toegevoegd!", "OK");
 
         
         NameEntry.Text = LocationEntry.Text = PriceEntry.Text = "";

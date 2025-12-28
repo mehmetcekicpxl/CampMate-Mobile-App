@@ -149,5 +149,30 @@ namespace CampMate.Services
                 return false;
             }
         }
+
+
+        // Methode om een reactie te posten
+        public async Task<bool> AddCommentAsync(int campId, string userName, string text)
+        {
+            try
+            {
+                var commentDto = new CreateCommentDto
+                {
+                    CampSiteId = campId,
+                    UserName = userName,
+                    Text = text
+                };
+
+                // Stuur POST request naar de API
+                var response = await _httpClient.PostAsJsonAsync("campsites/comments", commentDto);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fout bij het plaatsen van reactie: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

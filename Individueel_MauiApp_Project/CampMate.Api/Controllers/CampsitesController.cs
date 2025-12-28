@@ -48,5 +48,35 @@ namespace CampMate.API.Controllers
 
             return Ok(dtos);
         }
+
+        [HttpPost("comments")]
+        public async Task<IActionResult> AddComment([FromBody] CreateCommentDto commentDto)
+        {
+            // 1. Zoek de camping in de database (inclusief bestaande comments)
+            var camp = await _context.CampSites
+                .Include(c => c.Comments)
+                .FirstOrDefaultAsync(c => c.Id == commentDto.CampSiteId);
+
+            if (camp == null)
+            {
+                return NotFound("Camping niet gevonden.");
+            }
+
+            // 2. Maak een nieuw Comment-model aan
+            var newComment = new Comment
+            {
+                UserName = commentDto.UserName,
+                Text = commentDto.Text
+                
+            };
+
+         
+            camp.Comments.Add(newComment);
+
+            
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Reactie succesvol toegevoegd!" });
+        }
     }
 }

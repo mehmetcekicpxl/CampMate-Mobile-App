@@ -186,7 +186,7 @@ public partial class HomePage : ContentPage
         var button = sender as Button;
 
         // Als er geen knop of kampgegevens zijn, voer dan geen bewerking uit.
-        if (button == null || button.CommandParameter is not CampMate.Models.CampSite camp)
+        if (button == null || button.CommandParameter is not CampSite camp)
             return;
 
         if (button.Parent is Grid grid)
@@ -223,16 +223,29 @@ public partial class HomePage : ContentPage
                 }
             }
 
-        
+
             if (hasCommented)
             {
-                camp.Comments.Add(new CampSite.Comment
-                {
-                    UserName = currentUserName,
-                    Text = entry.Text
-                });
+                // 1. EERST API AANROEPEN (Database update)
+                
+                bool success = await _authService.AddCommentAsync(camp.Data.Id, currentUserName, entry.Text);
 
-                entry.Text = string.Empty; 
+                if (success)
+                {
+                    // 2. Als API succesvol is, voeg dan toe aan het scherm (UI)
+                    camp.Comments.Add(new CampSite.Comment
+                    {
+                        UserName = currentUserName,
+                        Text = entry.Text
+                    });
+
+                    entry.Text = string.Empty; 
+                    await DisplayAlert("Bedankt", "Je reactie is geplaatst!", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Fout", "Kan reactie niet opslaan. Controleer je verbinding.", "OK");
+                }
             }
         }
     }
