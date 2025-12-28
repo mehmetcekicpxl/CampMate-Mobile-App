@@ -1,173 +1,115 @@
-﻿namespace CampMate.Views;
+﻿using CampMate.Services;
+using CampMate.Views; 
 
-
+namespace CampMate.Views;
 
 public partial class SettingsPage : ContentPage
-
 {
-
-
-
     private double currentFontSize = 16;
-
-
-
-
-
     private bool isPasswordFormVisible = false;
 
+    
+    private readonly AuthService _authService;
 
-
-    public SettingsPage()
-
+    
+    public SettingsPage(AuthService authService)
     {
-
         InitializeComponent();
-
-
-
-
+        _authService = authService;
     }
 
-
-
-
-
     private void OnDarkModeToggled(object sender, ToggledEventArgs e)
-
     {
-
         if (e.Value)
-
         {
-
-            // Donkere modus inschakelen
-
             if (Application.Current != null)
-            {
                 Application.Current.UserAppTheme = AppTheme.Dark;
-            }
-
         }
-
         else
-
         {
-
-            // Verlichtingsmodus inschakelen
-
             if (Application.Current != null)
-            {
                 Application.Current.UserAppTheme = AppTheme.Light;
-            }
-
         }
-
     }
 
     private void ChangePassword_Clicked(object sender, EventArgs e)
-
     {
-
         isPasswordFormVisible = !isPasswordFormVisible;
-
         PasswordChangeForm.IsVisible = isPasswordFormVisible;
-
     }
-
-
-
 
     private async void SavePassword_Clicked(object sender, EventArgs e)
-
     {
-
         var currentPassword = CurrentPasswordEntry.Text;
-
         var newPassword = NewPasswordEntry.Text;
-
         var confirmPassword = ConfirmNewPasswordEntry.Text;
 
-        // 1. Huidige wachtwoordcontrole
-
-        if (currentPassword != LoginPage.TEST_PASSWORD)
-
+        // Validaties
+        if (string.IsNullOrWhiteSpace(currentPassword))
         {
-
-            await DisplayAlert("Fout", "Huidig wachtwoord is onjuist.", "OK");
-
+            await DisplayAlert("Fout", "Voer uw huidige wachtwoord in.", "OK");
             return;
-
         }
-
-
-
-        // 2. Nieuw wachtwoord en bevestigingscontrole
 
         if (string.IsNullOrWhiteSpace(newPassword) || newPassword != confirmPassword)
-
         {
-
-            await DisplayAlert("Fout", "Nieuw wachtwoord en bevestiging komen niet overeen of zijn leeg.", "OK");
-
+            await DisplayAlert("Fout", "Nieuw wachtwoord komt niet overeen.", "OK");
             return;
-
         }
 
-        LoginPage.TEST_PASSWORD = newPassword;
+       
+        var currentUser = await _authService.GetCurrentUserAsync();
+        if (currentUser == null)
+        {
+            await DisplayAlert("Fout", "Gebruiker niet ingelogd.", "OK");
+            return;
+        }
 
+        // API-OPROEP: Wachtwoord wijzigen op de server
+        bool success = await _authService.ChangePasswordAsync(currentUser.Email, currentPassword, newPassword);
+
+        if (!success)
+        {
+            await DisplayAlert("Fout", "Huidig wachtwoord is onjuist of er is een fout opgetreden.", "OK");
+            return;
+        }
+
+        
         PasswordChangeForm.IsVisible = false;
-
         isPasswordFormVisible = false;
-
 
         CurrentPasswordEntry.Text = string.Empty;
-
         NewPasswordEntry.Text = string.Empty;
-
         ConfirmNewPasswordEntry.Text = string.Empty;
 
-
-
         await DisplayAlert("Succes", "Je wachtwoord is succesvol gewijzigd.", "OK");
-
     }
 
-
-
     private void CancelPasswordChange_Clicked(object sender, EventArgs e)
-
     {
-
         PasswordChangeForm.IsVisible = false;
-
         isPasswordFormVisible = false;
-
     }
 
     private async void LogoutButton_Clicked(object sender, EventArgs e)
-
     {
-
-
         bool confirm = await DisplayAlert("Uitloggen", "Weet je zeker dat je wilt uitloggen?", "Ja", "Nee");
-
-
 
         if (!confirm)
             return;
 
-        var loginPage = new LoginPage();
+       
+        _authService.Logout();
 
-        Application.Current!.Windows[0].Page = new NavigationPage(loginPage);
+      
+        await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
 
-        
-        await loginPage.DisplayLogoutMessage();
-
+   
     }
 
     private async void GoToFavorites_Clicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new FavoritesPage());
+        
+        await Navigation.PushAsync(new FavoritesPage(_authService));
     }
 }

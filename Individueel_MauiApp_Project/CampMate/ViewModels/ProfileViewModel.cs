@@ -1,4 +1,5 @@
 ﻿using CampMate.Models;
+using CampMate.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -11,17 +12,38 @@ namespace CampMate.ViewModels
 {
     public partial class ProfileViewModel : ObservableObject
     {
+        private readonly AuthService _authService;
+
         [ObservableProperty]
         private User _currentUser;
 
         [ObservableProperty]
         private bool _isEditing;
 
-        public ProfileViewModel()
+        public ProfileViewModel(AuthService authService)
         {
             // als default een gebruiker instellen (dit zou normaal van een service komen maar nu om alleen te testen )
+            _authService = authService;
             CurrentUser = new User();
             IsEditing = false; 
+        }
+
+        public async Task LoadUserDataAsync()
+        {
+            var userDto = await _authService.GetCurrentUserAsync();
+
+            if (userDto != null)
+            {
+                // omzetten van DTO naar Model
+                CurrentUser = new User
+                {
+                    Id = userDto.Id,
+                    Name = userDto.Name,
+                    Email = userDto.Email,
+                    PhoneNumber = userDto.PhoneNumber,
+                    Location = userDto.Location
+                };
+            }
         }
 
         [RelayCommand]

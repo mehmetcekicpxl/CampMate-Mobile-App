@@ -6,19 +6,17 @@ using System.Threading.Tasks;
 
 namespace CampMate.Models
 {
-   public  class User
+   public class User
     {
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Location { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string Location { get; set; } = string.Empty;
 
         public User()
         {
-            Name="Mehmet";
-            Email= "campmate.com";
-            PhoneNumber= "+32 666 666 666";
-            Location= "Genk";
+         
         }
     }
 }

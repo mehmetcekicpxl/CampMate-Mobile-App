@@ -1,56 +1,56 @@
-﻿namespace CampMate.Views;
+﻿using CampMate.Services; 
+
+namespace CampMate.Views;
 
 public partial class LoginPage : ContentPage
 {
-    // Test gebruiker
-    private const string TEST_EMAIL = "campmate.com";
-    public static string TEST_PASSWORD = "123"; 
+    private readonly AuthService _authService;
 
     
+    public LoginPage(AuthService authService)
+    {
+        InitializeComponent();
+        _authService = authService;
+        this.BindingContext = this;
+        LogoutMessage.IsVisible = false;
+    }
+
+   
     public string UserEmail { get; set; }
     public string UserPassword { get; set; }
 
-    public LoginPage()
+    private async void OnLoginClicked(object sender, EventArgs e)
     {
-        InitializeComponent();
-        this.BindingContext = this;
-        LogoutMessage.IsVisible = false; //Verberg dit bericht in eerste instantie
-    }
+        if (string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(UserPassword))
+        {
+            await DisplayAlert("Fout", "Voer uw e-mailadres en wachtwoord in.", "OK");
+            return;
+        }
 
-    private void OnLoginClicked(object sender, EventArgs e)
-    {
-        
-        if (!string.IsNullOrWhiteSpace(UserEmail) &&
-            !string.IsNullOrWhiteSpace(UserPassword) &&
-            UserEmail == TEST_EMAIL &&
-            UserPassword == TEST_PASSWORD)
+        // We vragen het aan de API
+        var user = await _authService.LoginAsync(UserEmail, UserPassword);
+
+        if (user != null)
         {
            
+
             AppShell.LoadMainContent();
         }
         else
         {
-            
-            DisplayAlert("inloggen mislukt",
-                         $"je heeft ingevoerd: {UserEmail ?? "NULL"} / {UserPassword ?? "NULL"}\n" +
-                         $"verwacht: {TEST_EMAIL} / {TEST_PASSWORD}",
-                         "OK");
+            await DisplayAlert("Inloggen mislukt", "E-mailadres of wachtwoord onjuist.", "OK");
         }
     }
 
     private async void OnRegisterClicked(object sender, EventArgs e)
     {
-        
         await Shell.Current.GoToAsync($"//{nameof(RegisterPage)}");
     }
+
     public async Task DisplayLogoutMessage()
     {
-        // Bericht weergeven
         LogoutMessage.IsVisible = true;
-
-        // Verberg het bericht automatisch na 3 seconden (optioneel)
         await Task.Delay(3000);
         LogoutMessage.IsVisible = false;
     }
-  
 }

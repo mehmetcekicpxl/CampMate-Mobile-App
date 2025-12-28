@@ -1,5 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CampMate.Services;
+using CampMate.ViewModels;
+using CampMate.Views;
+using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls;
+using System.Net.Http;
+
 
 namespace CampMate
 {
@@ -17,8 +22,34 @@ namespace CampMate
                     fonts.AddFont("materialdesignicons-webfont.ttf", "MDI");
                 });
 
+            // HttpClient register
+            builder.Services.AddSingleton<HttpClient>(sp =>
+            {
+                return new HttpClient()
+                {
+                    BaseAddress = new Uri(DeviceInfo.Platform == DevicePlatform.Android
+                                          ? "http://10.0.2.2:5225/api/" // Android emulator
+                                          : "https://localhost:7011/api/"), // Windows/iOS
+                    Timeout = TimeSpan.FromSeconds(10)
+                };
+            });
+
+            // HomePage register (DI)
+            builder.Services.AddSingleton<HomePage>();
+
+            // AuthService registreren
+            builder.Services.AddSingleton<AuthService>();
+
+            // Pagina's opslaan (We gaan nu constructor injection gebruiken)
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<RegisterPage>();
+            builder.Services.AddTransient<SettingsPage>();
+            
+            builder.Services.AddTransient<ProfileViewModel>();
+            builder.Services.AddTransient<ProfilePage>();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

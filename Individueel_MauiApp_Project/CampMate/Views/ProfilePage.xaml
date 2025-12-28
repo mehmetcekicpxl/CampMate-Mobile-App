@@ -7,9 +7,7 @@
              x:DataType="vm:ProfileViewModel"
              Title="Mijn Profiel"
              >
-    <ContentPage.BindingContext>
-        <vm:ProfileViewModel />
-    </ContentPage.BindingContext>
+
 
     <ScrollView>
         <Grid RowDefinitions="Auto, Auto, *, Auto" Padding="20">
