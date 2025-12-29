@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36511.14 d17.14
+VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CampMate", "CampMate\CampMate.csproj", "{82F58AEC-4EDD-427A-BA6E-D56A719A6B8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CampMate.Api", "CampMate.Api\CampMate.Api.csproj", "{6B6C4DB0-E4ED-4090-9005-29327023D21F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Campmate.Shared", "Campmate.Shared\Campmate.Shared.csproj", "{E96175CB-3AE5-4143-A182-F19D936E2962}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,8 +17,17 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{82F58AEC-4EDD-427A-BA6E-D56A719A6B8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{82F58AEC-4EDD-427A-BA6E-D56A719A6B8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82F58AEC-4EDD-427A-BA6E-D56A719A6B8E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{82F58AEC-4EDD-427A-BA6E-D56A719A6B8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82F58AEC-4EDD-427A-BA6E-D56A719A6B8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B6C4DB0-E4ED-4090-9005-29327023D21F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B6C4DB0-E4ED-4090-9005-29327023D21F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B6C4DB0-E4ED-4090-9005-29327023D21F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B6C4DB0-E4ED-4090-9005-29327023D21F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E96175CB-3AE5-4143-A182-F19D936E2962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E96175CB-3AE5-4143-A182-F19D936E2962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E96175CB-3AE5-4143-A182-F19D936E2962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E96175CB-3AE5-4143-A182-F19D936E2962}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

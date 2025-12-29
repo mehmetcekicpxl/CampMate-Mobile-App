@@ -1,114 +1,289 @@
-﻿using CampMate.Messages;
-using CampMate.Models;
+﻿using CampMate.Shared.DTOs;
+using CampMate.Messages;
+using CampMate.Models; 
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Platform;
 using System.Collections.ObjectModel;
+using System.Net.Http.Json;
 using System.Text.Json;
-using static CampMate.Models.CampSite;
+using CampMate.Services;
 
 namespace CampMate.Views;
 
 public partial class HomePage : ContentPage
 {
+   
     private ObservableCollection<CampSite> CampList { get; set; }
+
+    // Filter vs. back-up die de volledige lijst bevat
     private List<CampSite> AllCamps { get; set; }
 
-    public HomePage()
+    private readonly HttpClient _httpClient;
+    private readonly AuthService _authService;
+
+    public HomePage(HttpClient httpClient , AuthService authService)
     {
         InitializeComponent();
+        _httpClient = httpClient;
+        _authService = authService;
 
-        // Load favorite camps from storage
-        var favorites = LoadFavoritesFromStorage();
+        
+        CampList = new ObservableCollection<CampSite>();
+        AllCamps = new List<CampSite>();
 
+        // UI-verbinding
+        CampListView.ItemsSource = CampList;
+
+        // --- MESSENGERS ---
         WeakReferenceMessenger.Default.Register<FavoritesUpdatedMessage>(this, (r, m) =>
         {
             ((HomePage)r).UpdateCampListFavorites();
         });
 
-        AllCamps = new List<CampSite>
-        {
-            new CampSite { Name="City Camp Valkenburg", Location="Valkenburg,Nederlands", Facilities="zwembad,fietsverhuur,Elektrisch", Price=50, Image="kampa.jpg", IsFavorite = favorites.Any(f => f.Name == "Camp A") },
-            new CampSite { Name="Camping Jungfrau", Location="Lauterbrunnen, Zwitserland", Facilities="Elektrisch", Price=30, Image="kampb.jpg" },
-            new CampSite { Name="Camping Village Roma Capitol", Location="Rome, Italië", Facilities="cafe,fietsverhuur", Price=50, Image="bg.jpg" },
-            new CampSite { Name="Camping De La Seine", Location="Jumièges, Frankrijk", Facilities="Elektrisch", Price=30, Image="kampa.jpg" }
-        };
-
-        
-        CampList = new ObservableCollection<CampSite>(AllCamps);
-        CampListView.ItemsSource = CampList;
-
-        
-
-        // WeakReferenceMessenger luister de message van FilterPage!!!
         WeakReferenceMessenger.Default.Register<FilterCriteriaMessage>(this, (r, m) =>
         {
             ApplyFilter(m.Value);
         });
 
-
         WeakReferenceMessenger.Default.Register<NewCampMessage>(this, (r, m) =>
         {
-            AllCamps.Add(m.Value);        
-            CampList.Add(m.Value);        
+            var campModel = new CampSite(m.Value);
+
+            // We zetten r om naar het type (HomePage).
+            if (r is HomePage page)
+            {
+                page.AllCamps.Add(campModel);
+                page.CampList.Add(campModel);
+            }
         });
 
+        // Haal de gegevens op uit de API
+        LoadCampsFromApi();
     }
 
-    //  Deze methode voert de synchronisatie uit
-    private async void UpdateCampListFavorites()
-    {
-        // 1. Haal de nieuwe, huidige favorietenlijst op uit SecureStorage
-        var updatedFavorites = await LoadFavoritesFromStorageForHomePage();
-        var favoriteNames = updatedFavorites.Select(f => f.Name).ToHashSet();
-
-        
-        foreach (var camp in CampList)
-        {
-            // Pas de IsFavorite property aan
-            camp.IsFavorite = favoriteNames.Contains(camp.Name);
-        }
-
-        CampListView.ItemsSource = null;
-        CampListView.ItemsSource = CampList;
-    }
-
-   
-    private async Task<List<CampSite>> LoadFavoritesFromStorageForHomePage()
+    private async void LoadCampsFromApi()
     {
         try
         {
-            string? json = await SecureStorage.GetAsync("FavoriteCamps");
-            if (!string.IsNullOrEmpty(json))
+            
+            var dtos = await _httpClient.GetFromJsonAsync<List<CampSiteDto>>("campsites");
+
+            if (dtos != null)
             {
-                return JsonSerializer.Deserialize<List<CampSite>>(json) ?? new List<CampSite>();
+                
+                var localFavorites = await LoadFavoritesFromStorageAsync();
+
+                // We plaatsen onze favoriete namen in een set (HashSet) voor snel zoeken.
+                var favoriteNames = localFavorites.Select(f => f.Name).ToHashSet();
+
+                AllCamps.Clear();
+                CampList.Clear();
+
+                foreach (var dto in dtos)
+                {
+                    // Is de naam van het kamp in mijn favorieten opgenomen?
+                    if (favoriteNames.Contains(dto.Name))
+                    {
+                        dto.IsFavorite = true; 
+                    }
+
+                   
+                    var campModel = new CampSite(dto);
+
+                    AllCamps.Add(campModel);
+                    CampList.Add(campModel);
+                }
             }
         }
-        catch { }
-        return new List<CampSite>();
+        catch (Exception ex)
+        {
+            Console.WriteLine("API-gegevens kunnen niet worden opgehaald: " + ex.Message);
+            await DisplayAlert("Fout", "Er is een probleem opgetreden tijdens het laden van de gegevens.", "OK");
+        }
     }
 
+
+    private async Task<List<CampSiteDto>> LoadFavoritesFromStorageAsync()
+    {
+        try
+        {
+            
+            var currentUser = await _authService.GetCurrentUserAsync();
+
+          
+            if (currentUser == null || string.IsNullOrEmpty(currentUser.Email))
+            {
+                return new List<CampSiteDto>();
+            }
+
+            // gebruikersspecifieke sleutel 
+            string key = $"Favorites_{currentUser.Email}";
+
+            string json = await SecureStorage.GetAsync(key);
+
+            if (!string.IsNullOrEmpty(json))
+            {
+                return JsonSerializer.Deserialize<List<CampSiteDto>>(json) ?? new List<CampSiteDto>();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Favorieten kunnen niet worden geladen: " + ex.Message);
+        }
+
+        return new List<CampSiteDto>();
+    }
+
+    private async void UpdateCampListFavorites()
+    {
+       
+        var updatedFavorites = await LoadFavoritesFromStorageAsync();
+
+        var favoriteNames = updatedFavorites.Select(f => f.Name).ToHashSet();
+        foreach (var camp in CampList)
+            camp.IsFavorite = favoriteNames.Contains(camp.Name);
+    }
+
+    private void FavoriteButton_Clicked(object sender, EventArgs e)
+    {
+        if (sender is ImageButton button && button.CommandParameter is CampSite camp)
+        {
+            camp.IsFavorite = !camp.IsFavorite;
+           
+            SaveFavoritesToStorage(AllCamps);
+        }
+    }
+
+    private async void SaveFavoritesToStorage(List<CampSite> camps)
+    {
+        try
+        {
+            var currentUser = await _authService.GetCurrentUserAsync();
+
+          
+
+            var favoriteCamps = camps.Where(c => c.IsFavorite).ToList();
+
+            
+            var dtosToSave = favoriteCamps.Select(c => c.Data).ToList();
+
+        
+            string key = $"Favorites_{currentUser.Email}";
+
+           
+            string json = JsonSerializer.Serialize(dtosToSave);
+            await SecureStorage.SetAsync(key, json);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Favorieten konden niet worden opgeslagen: " + ex.Message);
+        }
+    }
+
+
+
+    private async void SubmitReview_Clicked(object sender, EventArgs e)
+    {
+        var button = sender as Button;
+
+        // Als er geen knop of kampgegevens zijn, voer dan geen bewerking uit.
+        if (button == null || button.CommandParameter is not CampSite camp)
+            return;
+
+        if (button.Parent is Grid grid)
+        {
+            
+            var pickerBorder = grid.Children.FirstOrDefault(c => c is Border b && b.Content is Picker) as Border;
+            var entryBorder = grid.Children.FirstOrDefault(c => c is Border b && b.Content is Entry) as Border;
+
+            var picker = pickerBorder?.Content as Picker;
+            var entry = entryBorder?.Content as Entry;
+
+            bool hasRated = picker?.SelectedIndex != -1;
+            bool hasCommented = !string.IsNullOrWhiteSpace(entry?.Text);
+
+            
+            if (!hasRated && !hasCommented) return;
+
+           
+            var userDto = await _authService.GetCurrentUserAsync();
+
+           
+
+            string currentUserName = userDto.Name;
+           
+
+       
+            if (hasRated && picker.SelectedItem != null)
+            {
+                if (double.TryParse(picker.SelectedItem.ToString(), out double rating))
+                {
+                    camp.TotalStars += rating;
+                    camp.RatingCount++;
+                    camp.RefreshUI();
+                }
+            }
+
+
+            if (hasCommented)
+            {
+                // 1. EERST API AANROEPEN (Database update)
+                
+                bool success = await _authService.AddCommentAsync(camp.Data.Id, currentUserName, entry.Text);
+
+                if (success)
+                {
+                    // 2. Als API succesvol is, voeg dan toe aan het scherm (UI)
+                    camp.Comments.Add(new CampSite.Comment
+                    {
+                        UserName = currentUserName,
+                        Text = entry.Text
+                    });
+
+                    entry.Text = string.Empty; 
+                    await DisplayAlert("Bedankt", "Je reactie is geplaatst!", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Fout", "Kan reactie niet opslaan. Controleer je verbinding.", "OK");
+                }
+            }
+        }
+    }
+
+
+    // --- FILTEREN EN ZOEKEN ---
     private void ApplyFilter(FilterOptions filters)
     {
-        
         CampList.Clear();
-
-      
         var filtered = AllCamps.AsEnumerable();
 
-        if (filters.Location is not null)
-            filtered = filtered.Where(c => c.Location == filters.Location);
+        if (filters.Location != null)
+            filtered = filtered.Where(c => c.Location == filters.Location); 
 
-        if (filters.Facilities is not null)
+        if (filters.Facilities != null)
             filtered = filtered.Where(c => filters.Facilities.All(f => c.Facilities.Contains(f)));
 
-        // toevgen in ObservableCollection  en  UI gaat automatisch upgedated
         foreach (var item in filtered)
             CampList.Add(item);
     }
 
+    private void SearchEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        string searchText = e.NewTextValue?.ToLower() ?? "";
+        CampList.Clear();
+
+        var filtered = AllCamps
+            .Where(c => c.Name.ToLower().Contains(searchText) ||
+                        c.Location.ToLower().Contains(searchText));
+
+        foreach (var camp in filtered)
+            CampList.Add(camp);
+    }
+
+  
     private async void FilterButton_Clicked(object sender, EventArgs e)
     {
+        
         await Navigation.PushAsync(new FilterPage(AllCamps));
     }
 
@@ -117,143 +292,25 @@ public partial class HomePage : ContentPage
         await Shell.Current.GoToAsync(nameof(AddCampPage));
     }
 
-    private void FavoriteButton_Clicked(object sender, EventArgs e)
-    {
-        if (sender is ImageButton button && button.CommandParameter is CampSite camp)
-        {
-           
-            camp.IsFavorite = !camp.IsFavorite;
-
-           
-            var index = CampList.IndexOf(camp);
-            CampList.RemoveAt(index);
-            CampList.Insert(index, camp);
-
-            
-            SaveFavoritesToStorage(AllCamps);
-        }
-    }
-    private void SaveFavoritesToStorage(List<CampSite> camps)
-    {
-        
-        var favoriteCamps = camps.Where(c => c.IsFavorite).ToList();
-
-        
-        string json = JsonSerializer.Serialize(favoriteCamps);
-
-        
-        SecureStorage.SetAsync("FavoriteCamps", json);
-    }
-
-    
-    private List<CampSite> LoadFavoritesFromStorage()
-    {
-        try
-        {
-            string? json = SecureStorage.GetAsync("FavoriteCamps").Result;
-            if (!string.IsNullOrEmpty(json))
-            {
-                return JsonSerializer.Deserialize<List<CampSite>>(json) ?? new List<CampSite>();
-            }
-        }
-        catch {  }
-
-        return new List<CampSite>();
-    }
-
-    private void SearchEntry_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        string searchText = e.NewTextValue?.ToLower() ?? "";
-
-       
-        CampList.Clear();
-
-       
-        var filtered = AllCamps
-            .Where(c =>
-                c.Name.ToLower().Contains(searchText) ||
-                c.Location.ToLower().Contains(searchText)
-            );
-
-        
-        foreach (var camp in filtered)
-            CampList.Add(camp);
-    }
-
-  
+    // Scroll en commentaar 
     private void OnCustomScrollChanged(object sender, ValueChangedEventArgs e)
     {
         var slider = sender as Slider;
-        // Laten we CollectionView vinden via Grid waaraan Slider is gekoppeld.
-        var grid = slider.Parent as Grid;
+        var grid = slider?.Parent as Grid;
         var border = grid?.Children[0] as Border;
         var collectionView = border?.Content as CollectionView;
+
+        
         var camp = collectionView?.BindingContext as CampSite;
 
         if (camp != null && camp.Comments.Count > 0)
         {
-            // We berekenen op basis van de sliderwaarde (tussen 0 en 1) welke interpretatie we zullen gebruiken.
             int targetIndex = (int)(e.NewValue * (camp.Comments.Count - 1));
             var targetComment = camp.Comments[targetIndex];
-
             collectionView.ScrollTo(targetComment, position: ScrollToPosition.Start, animate: false);
         }
     }
 
+   
     
-
-    private void SubmitReview_Clicked(object sender, EventArgs e)
-    {
-        var button = sender as Button;
-        var camp = button?.CommandParameter as CampSite;
-        if (button == null || camp == null) return;
-
-        if (button.Parent is Grid grid)
-        {
-            var picker = ((Border)grid.Children[0]).Content as Picker;
-            var entry = ((Border)grid.Children[1]).Content as Entry;
-
-            bool hasRated = picker?.SelectedIndex != -1;
-            bool hasCommented = !string.IsNullOrWhiteSpace(entry?.Text);
-
-            if (!hasRated && !hasCommented) return;
-
-         
-            if (hasRated)
-            {
-                double rating = double.Parse(picker.SelectedItem.ToString());
-                camp.TotalStars += rating;
-                camp.RatingCount++;
-                camp.RefreshUI(); // Gemiddelde score wordt bijgewerkt in UI
-                picker.SelectedIndex = -1;
-            }
-
-            // 2. Commentaarverwerking en automatisch scrollen
-            if (hasCommented)
-            {
-                var newComment = new Comment { UserName = "Mehmet", Text = entry.Text };
-                camp.Comments.Add(newComment);
-                entry.Text = string.Empty;
-
-               
-                if (grid.Parent is VerticalStackLayout parent)
-                {
-                    var commentGrid = parent.Children.OfType<Grid>().FirstOrDefault(g => g.HeightRequest == 150);
-                    var border = commentGrid?.Children.OfType<Border>().FirstOrDefault();
-                    var collectionView = border?.Content as CollectionView;
-
-                    if (collectionView != null)
-                    {
-                        MainScrollView.InputTransparent = true; // Stop het scrollen
-                        Dispatcher.Dispatch(async () => {
-                            await Task.Delay(100);
-                            collectionView.ScrollTo(newComment, position: ScrollToPosition.End, animate: true);
-                            await Task.Delay(500);
-                            MainScrollView.InputTransparent = false; // Terug openen
-                        });
-                    }
-                }
-            }
-        }
-    }
 }

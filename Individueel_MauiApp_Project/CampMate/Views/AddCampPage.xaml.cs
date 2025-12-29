@@ -1,5 +1,6 @@
-﻿using CampMate.Models;
+﻿using CampMate.Shared.DTOs;
 using CampMate.Messages;
+using CampMate.Models;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls;
 using System;
@@ -70,35 +71,30 @@ public partial class AddCampPage : ContentPage
         }
     }
 
-    
+
     private async void SaveButton_Clicked(object sender, EventArgs e)
     {
-        var newCamp = new CampSite
+        var dto = new CampSiteDto
         {
             Name = NameEntry.Text,
             Location = LocationEntry.Text,
             Facilities = GetSelectedFacilities(),
-            Image = string.IsNullOrEmpty(_selectedImageFileName) ? "dotnet_bot.png" : _selectedImageFileName,
-            Price = int.TryParse(PriceEntry.Text, out var price) ? price : 0
-            //Stars = StarsPicker.SelectedItem != null ? int.Parse(StarsPicker.SelectedItem.ToString()) : 0
+            
+            Price = int.TryParse(PriceEntry.Text, out var price) ? price : 0,
+            Image = string.IsNullOrEmpty(_selectedImageFileName) ? "dotnet_bot.png" : _selectedImageFileName
         };
 
-        
+       
+        WeakReferenceMessenger.Default.Send(new NewCampMessage(dto));
+
+        await DisplayAlert("Succesvol", "Campingterrein toegevoegd!", "OK");
 
         
-
-        
-        WeakReferenceMessenger.Default.Send(new NewCampMessage(newCamp));
-
-        await DisplayAlert("Succes", "Camping succesvol toegevoegd!", "OK");
-
-        
-        NameEntry.Text = LocationEntry.Text  = PriceEntry.Text = "";
+        NameEntry.Text = LocationEntry.Text = PriceEntry.Text = "";
         _selectedImageFileName = null;
         SelectedImage.Source = null;
-        //StarsPicker.SelectedItem = null;
 
-        // ga naar de vorige pagina(HomePage)
+        
         await Shell.Current.GoToAsync("..");
     }
 

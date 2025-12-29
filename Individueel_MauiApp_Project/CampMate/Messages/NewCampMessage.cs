@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CampMate.Shared.DTOs; 
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using CampMate.Models;
 
 namespace CampMate.Messages
 {
-    public class NewCampMessage: ValueChangedMessage<CampSite>
+   
+    public class NewCampMessage : ValueChangedMessage<CampSiteDto>
     {
-        public NewCampMessage(CampSite value) : base(value)
+        public NewCampMessage(CampSiteDto value) : base(value)
         {
         }
     }

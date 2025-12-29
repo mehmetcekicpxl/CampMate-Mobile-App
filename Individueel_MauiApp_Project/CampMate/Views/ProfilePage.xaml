@@ -7,9 +7,7 @@
              x:DataType="vm:ProfileViewModel"
              Title="Mijn Profiel"
              >
-    <ContentPage.BindingContext>
-        <vm:ProfileViewModel />
-    </ContentPage.BindingContext>
+
 
     <ScrollView>
         <Grid RowDefinitions="Auto, Auto, *, Auto" Padding="20">
@@ -32,11 +30,15 @@
                                 HorizontalOptions="Center" VerticalOptions="Center"
                                 BackgroundColor="White">    
                                 <Border.Content>
-                                    <Image Source="kampb.jpg"
-                                   Aspect="AspectFill"      
-                                   HorizontalOptions="Fill" VerticalOptions="Fill" />   
+                                    <Image Source="{Binding ProfileImageUrl}"
+                                           Aspect="AspectFill"      
+                                           HorizontalOptions="Fill" 
+                                           VerticalOptions="Fill" />  
                                 </Border.Content>
                             </Border>
+
+
+                            
 
                             <Grid IsVisible="{Binding IsEditing}"
                   VerticalOptions="Center" HorizontalOptions="Center" Margin="0,0,0,0">
