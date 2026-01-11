@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CampMate.ViewModels"
+             x:Class="CampMate.Views.CampDetailPage"
+             Title="{Binding Camp.Name}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="10" Padding="15">
+
+            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0">
+                <Image Source="{Binding CampImageUrl}" 
+                       HeightRequest="250" 
+                       Aspect="AspectFill"
+                       BackgroundColor="LightGray"/>
+            </Border>
+
+            <Label Text="{Binding Camp.Name}" FontSize="24" FontAttributes="Bold" TextColor="Black"/>
+            <Label Text="{Binding Camp.Location}" FontSize="18" TextColor="Gray"/>
+
+            <HorizontalStackLayout Spacing="15">
+                <Label Text="{Binding Camp.Price, StringFormat='{0} € / Nacht'}" 
+                       TextColor="Green" 
+                       FontAttributes="Bold" 
+                       FontSize="18"/>
+
+                <Label Text="{Binding Camp.AverageStars, StringFormat='★ {0:F1}'}" 
+                       TextColor="#E76F51" 
+                       FontSize="18"/>
+            </HorizontalStackLayout>
+
+            <BoxView HeightRequest="1" Color="LightGray" Margin="0,10"/>
+
+            <Label Text="Faciliteiten" FontAttributes="Bold" FontSize="16"/>
+            <Label Text="{Binding Camp.Facilities}" TextColor="#2A9D8F"/>
+
+            <Label Text="{Binding DebugInfo}" 
+                   TextColor="Red" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center"
+                   BackgroundColor="Yellow"/>
+
+            <Button Text="DEZE KAMP VERWIJDEREN 🗑️"
+                    BackgroundColor="#FF4444"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Margin="0,20,0,10"
+                    Command="{Binding DeleteCampCommand}"
+                    IsVisible="{Binding CanDeleteCamp}" />
+
+            <BoxView HeightRequest="1" Color="LightGray" Margin="0,10"/>
+
+            <Border Stroke="Orange" StrokeShape="RoundRectangle 10" Padding="10" BackgroundColor="White" Margin="0,0,0,10">
+                <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="10">
+                    <Label Text="Beoordeel dit kamp:" VerticalOptions="Center" FontAttributes="Bold" TextColor="#E76F51"/>
+
+                    <Picker Grid.Column="1" Title="Kies" 
+                            SelectedIndex="{Binding SelectedRatingIndex}"
+                            WidthRequest="80" VerticalOptions="Center">
+                        <Picker.Items>
+                            <x:String>1 ★</x:String>
+                            <x:String>2 ★</x:String>
+                            <x:String>3 ★</x:String>
+                            <x:String>4 ★</x:String>
+                            <x:String>5 ★</x:String>
+                        </Picker.Items>
+                    </Picker>
+
+                    <Button Grid.Column="2" 
+                            Text="Beoordeel" 
+                            Command="{Binding SubmitRatingCommand}"
+                            BackgroundColor="#E76F51" 
+                            TextColor="White"
+                            HeightRequest="40"
+                            FontSize="12"
+                            FontAttributes="Bold"/>
+                </Grid>
+            </Border>
+
+            <Border Stroke="#2A9D8F" StrokeShape="RoundRectangle 10" Padding="10" BackgroundColor="White">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Reactie schrijven" FontAttributes="Bold" TextColor="#2A9D8F"/>
+
+                    <Entry Placeholder="Deel je ervaringen..." 
+                           Text="{Binding NewCommentText}"/>
+
+                    <Button Text="REACTIE VERZENDEN" 
+                            Command="{Binding SubmitCommentCommand}"
+                            BackgroundColor="#2A9D8F" 
+                            TextColor="White"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="REACTIES" FontAttributes="Bold" FontSize="18" Margin="0,10,0,5"/>
+
+            <CollectionView ItemsSource="{Binding CommentsList}" HeightRequest="400">
+                <CollectionView.EmptyView>
+                    <Label Text="Er zijn nog geen reacties." HorizontalOptions="Center" Padding="20" TextColor="Gray"/>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border StrokeShape="RoundRectangle 10" Margin="0,0,0,10" Padding="10" BackgroundColor="#F9F9F9">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                    <Label Text="{Binding UserName}" FontAttributes="Bold" TextColor="#2A9D8F"/>
+                                    <Label Text="{Binding Text}" TextColor="Black"/>
+                                    <Label Text="{Binding UserId, StringFormat='Yazan ID: {0}'}" FontSize="10" TextColor="Gray"/>
+                                </VerticalStackLayout>
+
+                                <Button Grid.Column="1"
+                                        Text="Verwijderen"
+                                        BackgroundColor="#FF4444"
+                                        TextColor="White"
+                                        FontSize="12"
+                                        HeightRequest="40"
+                                        WidthRequest="60"
+                                        VerticalOptions="Center"
+                                        IsVisible="{Binding CanDeleteComment}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CampDetailViewModel}}, Path=DeleteCommentCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

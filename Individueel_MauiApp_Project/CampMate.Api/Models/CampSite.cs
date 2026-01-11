@@ -1,4 +1,6 @@
-﻿namespace CampMate.Api.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CampMate.Api.Models
 {
     public class CampSite
     {
@@ -17,5 +19,10 @@
 
         // Navigation property for Comments
         public List<Comment> Comments { get; set; } = new List<Comment>();
+
+        public int UserId { get; set; } // FK
+
+        [ForeignKey("UserId")] 
+        public User? User { get; set; } 
     }
 }

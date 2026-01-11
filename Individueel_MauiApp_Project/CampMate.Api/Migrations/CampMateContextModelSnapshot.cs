@@ -60,7 +60,12 @@ namespace CampMate.Api.Migrations
                     b.Property<double>("TotalStars")
                         .HasColumnType("float");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("CampSites");
                 });
@@ -80,6 +85,9 @@ namespace CampMate.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -87,6 +95,8 @@ namespace CampMate.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CampSiteId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -102,6 +112,9 @@ namespace CampMate.Api.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -127,6 +140,17 @@ namespace CampMate.Api.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("CampMate.Api.Models.CampSite", b =>
+                {
+                    b.HasOne("CampMate.Api.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("CampMate.Api.Models.Comment", b =>
                 {
                     b.HasOne("CampMate.Api.Models.CampSite", "CampSite")
@@ -135,7 +159,15 @@ namespace CampMate.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CampMate.Api.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("CampSite");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CampMate.Api.Models.CampSite", b =>

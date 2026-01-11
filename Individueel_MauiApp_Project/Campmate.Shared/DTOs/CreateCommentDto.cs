@@ -16,5 +16,9 @@ namespace CampMate.Shared.DTOs
 
    
         public string Text { get; set; } = string.Empty;
+
+        public int UserId { get; set; }
+
+        public int Rating { get; set; }
     }
 }

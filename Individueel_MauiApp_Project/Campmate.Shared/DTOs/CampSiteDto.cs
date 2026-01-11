@@ -14,12 +14,14 @@ namespace CampMate.Shared.DTOs
        
         public double TotalStars { get; set; }
         public int RatingCount { get; set; }
-        public double AverageStars { get; set; }
+        public double AverageStars => RatingCount > 0 ? (double)TotalStars / RatingCount : 0;
 
-       
+
         public bool IsFavorite { get; set; } = false;
 
         
         public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
+
+        public int UserId { get; set; }
     }
 }

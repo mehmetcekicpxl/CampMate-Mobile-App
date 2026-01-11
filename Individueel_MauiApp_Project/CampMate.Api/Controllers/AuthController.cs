@@ -73,7 +73,8 @@ namespace CampMate.Api.Controllers
                 Token = "dummy-token",
                 PhoneNumber = user.PhoneNumber,
                 Location = user.Location,
-                ProfileImage = user.ProfileImage
+                ProfileImage = user.ProfileImage,
+                IsAdmin = user.IsAdmin
             });
         }
 

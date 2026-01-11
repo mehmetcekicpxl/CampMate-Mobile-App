@@ -13,6 +13,8 @@ public partial class LoginPage : ContentPage
         _authService = authService;
         this.BindingContext = this;
         LogoutMessage.IsVisible = false;
+        UserEmail = "mehmet@campmate.com";
+        UserPassword = "123";
     }
 
    
