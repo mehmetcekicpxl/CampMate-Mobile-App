@@ -2,168 +2,110 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CampMate.Views.HomePage"
-             
-              >
+             Title="CampMate Home">
+
+  
+
     <ScrollView x:Name="MainScrollView">
+        <VerticalStackLayout Padding="10" Spacing="10">
 
+            <Label Text="HOME" 
+                   FontSize="24" FontAttributes="Bold"
+                   VerticalOptions="Center" 
+                   HorizontalOptions="Center" Margin="0,10,0,20" />
 
-        <VerticalStackLayout>
-            <Label 
-                Text="HOME" FontSize="20"
-                VerticalOptions="Center" 
-                HorizontalOptions="Center"  Margin="0, 10 ,0 ,20" />
-
-         
-
-            <Border Stroke="Green" BackgroundColor="Beige" StrokeShape="RoundRectangle 10" Margin="0,0,0,10" HeightRequest="25">
-                <Entry Placeholder="Search for a name or region" HeightRequest="10" TextColor="Black" TextChanged="SearchEntry_TextChanged"/>
+            <Border Stroke="#2A9D8F" BackgroundColor="White" StrokeShape="RoundRectangle 20" HeightRequest="50" Padding="10,0">
+                <Entry Placeholder="Search for a name or region..." 
+                       TextColor="Black" 
+                       PlaceholderColor="Gray"
+                       TextChanged="SearchEntry_TextChanged"
+                       VerticalOptions="Center"/>
             </Border>
 
-            <Grid ColumnDefinitions="2*,1*" Padding="1" ColumnSpacing="1" HeightRequest="40">
-                <Button Text="Filters" Grid.Column="0"  BackgroundColor="#2A9D8F" TextColor="White" CornerRadius="50" Clicked="FilterButton_Clicked"/>
-                <Button Text="Add New Camp" Grid.Column="1" BackgroundColor="#E76F51" TextColor="White" CornerRadius="50" Clicked="AddNewCampButton_Clicked"/>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" HeightRequest="45">
+                <Button Text="Filters" Grid.Column="0" 
+                        BackgroundColor="#2A9D8F" TextColor="White" 
+                        CornerRadius="20" Clicked="FilterButton_Clicked"
+                        ImageSource="{FontImageSource FontFamily=MDI, Glyph='&#xF0232;', Color=White, Size=18}"/>
+
+                <Button Text="Add New Camp" Grid.Column="1" 
+                        BackgroundColor="#E76F51" TextColor="White" 
+                        CornerRadius="20" Clicked="AddNewCampButton_Clicked"
+                        ImageSource="{FontImageSource FontFamily=MDI, Glyph='&#xF0415;', Color=White, Size=18}"/>
             </Grid>
 
+            <CollectionView x:Name="CampListView" 
+                            Margin="0,10,0,0"
+                            SelectionMode="Single"
+                            SelectionChanged="OnCampSelected">
 
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="15"/>
+                </CollectionView.ItemsLayout>
 
-            <CollectionView x:Name="CampListView" Margin="0,10,0,0">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border Stroke="Green" StrokeShape="RoundRectangle 10" Margin="5" BackgroundColor="Lavender">
-                            <VerticalStackLayout Padding="1" Spacing="1" >
+                        <Border Stroke="LightGray" StrokeShape="RoundRectangle 15" BackgroundColor="White" Padding="0">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroupList>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="#F0F0F0" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateGroupList>
+                            </VisualStateManager.VisualStateGroups>
 
-                                <Grid ColumnDefinitions="*,Auto, Auto">
+                            <Grid RowDefinitions="180, Auto, Auto" Padding="0">
 
-                                    <Label Text="{Binding Name}" 
-                                           Style="{StaticResource TitleTextStyle}" 
-                                           Grid.Column="0"/>
-                                    <Label Text="Like" 
-                                           TextColor="Black" 
-                                           Grid.Column="1"/>
+                                <Grid Grid.Row="0">
+                                    <Image Source="{Binding ImagePath}" Aspect="AspectFill" HorizontalOptions="Fill" VerticalOptions="Fill"/>
 
+                                    <Border BackgroundColor="#CCFFFFFF" StrokeShape="RoundRectangle 20" 
+                                            HorizontalOptions="End" VerticalOptions="Start" 
+                                            Margin="10" Padding="5" HeightRequest="40" WidthRequest="40">
 
-                                    <Grid Grid.Column="2" HeightRequest="25" WidthRequest="25">
-
-                                        <ImageButton IsVisible="{Binding IsFavorite}"
-                 Clicked="FavoriteButton_Clicked"
-                 CommandParameter="{Binding .}">
+                                        <ImageButton Clicked="FavoriteButton_Clicked" CommandParameter="{Binding .}" BackgroundColor="Transparent">
                                             <ImageButton.Source>
-                                                <FontImageSource FontFamily="MDI"
-                             Glyph="&#xF02D1;"  
-                             Color="{Binding IsFavorite, Converter={StaticResource BoolToFavoriteColorConverter}}"
-                             Size="25"/>
+                                                <FontImageSource FontFamily="MDI" 
+                                                                 Glyph="{Binding IsFavorite, Converter={StaticResource BoolToHeartIconConverter}}" 
+                                                                 Color="{Binding IsFavorite, Converter={StaticResource BoolToFavoriteColorConverter}}" 
+                                                                 Size="24"/>
                                             </ImageButton.Source>
                                         </ImageButton>
+                                    </Border>
+                                </Grid>
 
-                                        <ImageButton IsVisible="{Binding IsFavorite, Converter={StaticResource InverseBoolConverter}}"
-                 Clicked="FavoriteButton_Clicked"
-                 CommandParameter="{Binding .}">
-                                            <ImageButton.Source>
-                                                <FontImageSource FontFamily="MDI"
-                             Glyph="&#xF02D5;" 
-                             Color="{Binding IsFavorite, Converter={StaticResource BoolToFavoriteColorConverter}}"
-                             Size="25"/>
-                                            </ImageButton.Source>
-                                        </ImageButton>
+                                <VerticalStackLayout Grid.Row="1" Padding="15,10">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <Label Text="{Binding Name}" Grid.Column="0" FontSize="18" FontAttributes="Bold" TextColor="Black" LineBreakMode="TailTruncation"/>
 
+                                        <Label Text=" Meer Info >>>" 
+                                               Grid.Column="1" 
+                                               TextColor="#2A9D8F" 
+                                               FontSize="14" 
+                                               FontAttributes="Bold"
+                                               VerticalOptions="Center"/>   
                                     </Grid>
 
+                                    <Label Text="{Binding Location}" FontSize="14" TextColor="Gray" Margin="0,2,0,0"/>
+                                </VerticalStackLayout>
+
+                                <Grid Grid.Row="2" ColumnDefinitions="*, Auto" Padding="15,0,15,15">
+                                    <Label Text="{Binding Price, StringFormat='{0} € / Night'}" Grid.Column="0" TextColor="#2A9D8F" FontAttributes="Bold" FontSize="16" VerticalOptions="Center"/>
+
+                                    <Label Text="Tap for details ›" Grid.Column="1" TextColor="Gray" FontSize="12" VerticalOptions="Center"/>
                                 </Grid>
 
-                                <Image Source="{Binding ImagePath}" HeightRequest="151" Aspect="AspectFill"/>
-
-
-                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="20" TextColor="Black"/>
-
-
-                                <Label Text="{Binding Location}" FontSize="16" TextColor="Black"  FontAttributes="Bold"/>
-
-
-                                <!--<Label Text="{Binding Stars, StringFormat='Rank ★ {0}'}" FontSize="16" TextColor="Green"/>-->
-
-
-                                <Label Text="{Binding Facilities, StringFormat='Faciliteiten: {0}'}" FontSize="14" TextColor="Gray"/>
-
-
-                                <Label Text="{Binding Price, StringFormat='Avond prijs: {0} €'}" FontSize="16" FontAttributes="Bold" TextColor="Green"/>
-
-
-                                <Label Text="{Binding AverageStars, StringFormat='Gemiddeld Ster: ★ {0}'}" 
-       FontSize="16" TextColor="Green" FontAttributes="Bold"/>
-
-                                <Label Text="Reviews" FontAttributes="Bold" Margin="0,5,0,0"/>
-
-                                <Grid ColumnDefinitions="*, 30" HeightRequest="150" Margin="0,0,0,10">
-
-                                    <Border Grid.Column="0" BackgroundColor="#F8F9FA" Stroke="Silver" StrokeShape="RoundRectangle 8">
-                                        <CollectionView x:Name="CommentsList"
-                        ItemsSource="{Binding Comments}" 
-                        VerticalScrollBarVisibility="Never">
-                                            <CollectionView.ItemTemplate>
-                                                <DataTemplate>
-                                                    <VerticalStackLayout Padding="8">
-                                                        <Label Text="{Binding UserName}" FontSize="11" FontAttributes="Bold" TextColor="#2A9D8F"/>
-                                                        <Label Text="{Binding Text}" FontSize="13" TextColor="Black"/>
-                                                        <BoxView HeightRequest="1" Color="#EEEEEE" Margin="0,2"/>
-                                                    </VerticalStackLayout>
-                                                </DataTemplate>
-                                            </CollectionView.ItemTemplate>
-                                        </CollectionView>
-                                    </Border>
-
-                                    <Slider Grid.Column="1" 
-            Rotation="90" 
-            WidthRequest="140"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            Minimum="0" 
-            Maximum="1"
-            MinimumTrackColor="Transparent" 
-            MaximumTrackColor="Transparent"
-            ThumbImageSource="{FontImageSource FontFamily=MDI, Glyph='&#xF09C1;', Color='#2A9D8F', Size=25}"
-            ValueChanged="OnCustomScrollChanged" />
-
-                                                            <BoxView Grid.Column="1" 
-                                         WidthRequest="10" 
-                                         CornerRadius="5" 
-                                         BackgroundColor="Silver" 
-                                         Opacity="0.6" 
-                                         HorizontalOptions="Center" 
-                                         VerticalOptions="Fill" 
-                                         InputTransparent="True" 
-                                         Margin="0,10"/>
-                                </Grid>
-
-                                <Grid ColumnDefinitions="65, *, Auto" ColumnSpacing="5" Margin="0,5">
-                                    <Border Stroke="Gray" StrokeShape="RoundRectangle 20">
-                                        <Picker x:Name="RatePicker" Title="   ★" HorizontalOptions="Center" >
-                                            <Picker.Items>
-                                                <x:String>1</x:String>
-                                                <x:String>2</x:String>
-                                                <x:String>3</x:String>
-                                                <x:String>4</x:String>
-                                                <x:String>5</x:String>
-                                            </Picker.Items>
-                                        </Picker>
-                                    </Border>
-                                    <Border Grid.Column="1" Stroke="Gray" StrokeShape="RoundRectangle 20" Padding="10,0">
-                                        <Entry x:Name="UserCommentEntry" Placeholder="Review..." FontSize="13" HeightRequest="40"/>
-                                    </Border>
-                                    <Button Grid.Column="2" Text="Submit" Clicked="SubmitReview_Clicked" 
-            CommandParameter="{Binding .}" BackgroundColor="#2A9D8F" 
-            TextColor="White" CornerRadius="20" HeightRequest="40"/>
-                                </Grid>
-
-
-                            </VerticalStackLayout>
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
         </VerticalStackLayout>
     </ScrollView>
-
-
-
-
 </ContentPage>

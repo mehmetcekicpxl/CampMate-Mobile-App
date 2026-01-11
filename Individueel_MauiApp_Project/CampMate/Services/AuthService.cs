@@ -29,6 +29,9 @@ namespace CampMate.Services
                     {
                         string userJson = JsonSerializer.Serialize(user);
                         await SecureStorage.SetAsync("CurrentUser", userJson);
+
+                        Preferences.Set("UserId", user.Id);
+                        Preferences.Set("IsAdmin", user.IsAdmin);
                     }
                     return user;
                 }
@@ -152,15 +155,19 @@ namespace CampMate.Services
 
 
         // Methode om een reactie te posten
-        public async Task<bool> AddCommentAsync(int campId, string userName, string text)
+        public async Task<bool> AddCommentAsync(int campId, string userName, string text, int rating)
         {
             try
             {
+                int currentUserId = Preferences.Get("UserId", 0);
+
                 var commentDto = new CreateCommentDto
                 {
                     CampSiteId = campId,
                     UserName = userName,
-                    Text = text
+                    Text = text,
+                    UserId = currentUserId,
+                    Rating =rating
                 };
 
                 // Stuur POST request naar de API

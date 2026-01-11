@@ -9,5 +9,6 @@
         public string PhoneNumber { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public string? ProfileImage { get; set; }
+        public bool IsAdmin { get; set; } = false;
     }
 }

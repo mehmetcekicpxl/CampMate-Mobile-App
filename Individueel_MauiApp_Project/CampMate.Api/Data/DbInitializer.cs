@@ -17,33 +17,44 @@ namespace CampMate.Api.Data
                 return; 
             }
 
-            
+
+            // Voeg Users toe
+            // We voegen de wachtwoorden voorlopig toe als platte tekst zonder ze te hashlen (Password="123").
+            var admin = new User
+            {
+                 Name="Admin", Email="mehmet@campmate.com", Password="123", PhoneNumber="+32 666 666 666", Location="Hasselt" , IsAdmin=true
+            };
+            context.Users.Add(admin);
+            context.SaveChanges();
+
+
 
             // Voeg CampSites toe
             var camps = new CampSite[]
             {
-                new CampSite { Name="City Camp Valkenburg", Location="Valkenburg, Nederland", Facilities="zwembad,fietsverhuur,Elektrisch", Price=50, Image="kampa.jpg" },
-                new CampSite { Name="Camping Jungfrau", Location="Lauterbrunnen, Zwitserland", Facilities="Elektrisch", Price=30, Image="kampb.jpg" },
-                new CampSite { Name="Camping Village Roma Capitol", Location="Rome, Italië", Facilities="cafe,fietsverhuur", Price=50, Image="bg.jpg" },
-                new CampSite { Name="Camping De La Seine", Location="Jumièges, Frankrijk", Facilities="Elektrisch", Price=30, Image="kampa.jpg" }
+                new CampSite
+                {
+                    Name="City Camp Valkenburg",
+                    Location="Valkenburg, Nederland",
+                    Facilities="zwembad,fietsverhuur,Elektrisch",
+                    Price=50,
+                    Image="kampa.jpg",
+                    UserId=admin.Id
+                },
+                new CampSite { Name="Camping Jungfrau", Location="Lauterbrunnen, Zwitserland", Facilities="Elektrisch", Price=30, Image="kampb.jpg" ,UserId=admin.Id},
+                new CampSite { Name="Camping Village Roma Capitol", Location="Rome, Italië", Facilities="cafe,fietsverhuur", Price=50, Image="bg.jpg" ,UserId=admin.Id},
+                new CampSite { Name="Camping De La Seine", Location="Jumièges, Frankrijk", Facilities="Elektrisch", Price=30, Image="kampa.jpg" ,UserId=admin.Id}
             };
             context.CampSites.AddRange(camps);
             context.SaveChanges();
 
-            // Voeg Users toe
-            // We voegen de wachtwoorden voorlopig toe als platte tekst zonder ze te hashlen (Password="123").
-            var users = new User[]
-            {
-                new User { Name="Mehmet", Email="mehmet@campmate.com", Password="123", PhoneNumber="+32 666 666 666", Location="Hasselt" }
-            };
-            context.Users.AddRange(users);
-            context.SaveChanges();
+         
 
             // Voeg Comments toe
             var comments = new Comment[]
             {
-                new Comment { UserName="Mehmet", Text="Geweldige camping!", CampSiteId=camps[0].Id  },
-                new Comment { UserName="Ahmet", Text="Heel mooi terrein.", CampSiteId=camps[1].Id  }
+                new Comment { UserName="Mehmet", Text="Geweldige camping!", CampSiteId=camps[0].Id ,UserId=admin.Id },
+                new Comment { UserName="Mehmet", Text="Heel mooi terrein.", CampSiteId=camps[1].Id ,UserId=admin.Id }
             };
             context.Comments.AddRange(comments);
             context.SaveChanges();

@@ -1,4 +1,6 @@
-﻿namespace CampMate.Api.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CampMate.Api.Models
 {
     public class Comment
     {
@@ -8,6 +10,13 @@
 
         // Foreign key to CampSite
         public int CampSiteId { get; set; }
-        public CampSite CampSite { get; set; }
+
+        [ForeignKey("CampSiteId")]
+        public CampSite? CampSite { get; set; }
+
+        public int UserId { get; set; } // FK
+
+        [ForeignKey("UserId")]
+        public User? User { get; set; } 
     }
 }

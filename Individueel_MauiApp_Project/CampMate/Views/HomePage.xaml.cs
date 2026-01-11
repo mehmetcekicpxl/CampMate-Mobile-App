@@ -46,15 +46,56 @@ public partial class HomePage : ContentPage
 
         WeakReferenceMessenger.Default.Register<NewCampMessage>(this, (r, m) =>
         {
-            var campModel = new CampSite(m.Value);
+            var newDto = m.Value;
 
-            // We zetten r om naar het type (HomePage).
+            
+            var localImages = new List<string> { "kampa.jpg", "kampb.jpg", "bg.jpg", "dotnet_bot.png" };
+
+            if (!string.IsNullOrEmpty(newDto.Image)
+                && !newDto.Image.StartsWith("http")
+                && !localImages.Contains(newDto.Image))
+            {
+                newDto.Image = $"http://10.0.2.2:5225/images/{newDto.Image}";
+            }
+
+            var campModel = new CampSite(newDto);
+
             if (r is HomePage page)
             {
                 page.AllCamps.Add(campModel);
                 page.CampList.Add(campModel);
             }
         });
+
+
+
+        // --- LUISTER NAAR HET VERWIJDERINGSBERICHT ---
+        WeakReferenceMessenger.Default.Register<CampDeletedMessage>(this, (r, m) =>
+        {
+            // Verwijder de ID uit het bericht
+            int deletedCampId = m.Value;
+
+            if (r is HomePage page)
+            {
+                // 1. Zoek en verwijder uit de lijst op het scherm
+                var itemToRemove = page.CampList.FirstOrDefault(c => c.Data.Id == deletedCampId);
+                if (itemToRemove != null)
+                {
+                    page.CampList.Remove(itemToRemove);
+                }
+
+                
+                var itemInAll = page.AllCamps.FirstOrDefault(c => c.Data.Id == deletedCampId);
+                if (itemInAll != null)
+                {
+                    page.AllCamps.Remove(itemInAll);
+                }
+            }
+        });
+
+       
+
+        
 
         // Haal de gegevens op uit de API
         LoadCampsFromApi();
@@ -78,8 +119,20 @@ public partial class HomePage : ContentPage
                 AllCamps.Clear();
                 CampList.Clear();
 
+
+                
+                var localImages = new List<string> { "kampa.jpg", "kampb.jpg", "bg.jpg", "dotnet_bot.png" };
+
                 foreach (var dto in dtos)
                 {
+                    
+                    if (!string.IsNullOrEmpty(dto.Image)
+                        && !dto.Image.StartsWith("http")
+                        && !localImages.Contains(dto.Image)) 
+                    {
+                        dto.Image = $"http://10.0.2.2:5225/images/{dto.Image}";
+                    }
+                
                     // Is de naam van het kamp in mijn favorieten opgenomen?
                     if (favoriteNames.Contains(dto.Name))
                     {
@@ -181,75 +234,7 @@ public partial class HomePage : ContentPage
 
 
 
-    private async void SubmitReview_Clicked(object sender, EventArgs e)
-    {
-        var button = sender as Button;
-
-        // Als er geen knop of kampgegevens zijn, voer dan geen bewerking uit.
-        if (button == null || button.CommandParameter is not CampSite camp)
-            return;
-
-        if (button.Parent is Grid grid)
-        {
-            
-            var pickerBorder = grid.Children.FirstOrDefault(c => c is Border b && b.Content is Picker) as Border;
-            var entryBorder = grid.Children.FirstOrDefault(c => c is Border b && b.Content is Entry) as Border;
-
-            var picker = pickerBorder?.Content as Picker;
-            var entry = entryBorder?.Content as Entry;
-
-            bool hasRated = picker?.SelectedIndex != -1;
-            bool hasCommented = !string.IsNullOrWhiteSpace(entry?.Text);
-
-            
-            if (!hasRated && !hasCommented) return;
-
-           
-            var userDto = await _authService.GetCurrentUserAsync();
-
-           
-
-            string currentUserName = userDto.Name;
-           
-
-       
-            if (hasRated && picker.SelectedItem != null)
-            {
-                if (double.TryParse(picker.SelectedItem.ToString(), out double rating))
-                {
-                    camp.TotalStars += rating;
-                    camp.RatingCount++;
-                    camp.RefreshUI();
-                }
-            }
-
-
-            if (hasCommented)
-            {
-                // 1. EERST API AANROEPEN (Database update)
-                
-                bool success = await _authService.AddCommentAsync(camp.Data.Id, currentUserName, entry.Text);
-
-                if (success)
-                {
-                    // 2. Als API succesvol is, voeg dan toe aan het scherm (UI)
-                    camp.Comments.Add(new CampSite.Comment
-                    {
-                        UserName = currentUserName,
-                        Text = entry.Text
-                    });
-
-                    entry.Text = string.Empty; 
-                    await DisplayAlert("Bedankt", "Je reactie is geplaatst!", "OK");
-                }
-                else
-                {
-                    await DisplayAlert("Fout", "Kan reactie niet opslaan. Controleer je verbinding.", "OK");
-                }
-            }
-        }
-    }
-
+    
 
     // --- FILTEREN EN ZOEKEN ---
     private void ApplyFilter(FilterOptions filters)
@@ -292,25 +277,31 @@ public partial class HomePage : ContentPage
         await Shell.Current.GoToAsync(nameof(AddCampPage));
     }
 
-    // Scroll en commentaar 
-    private void OnCustomScrollChanged(object sender, ValueChangedEventArgs e)
+    
+
+    
+    private async void OnCampSelected(object sender, SelectionChangedEventArgs e)
     {
-        var slider = sender as Slider;
-        var grid = slider?.Parent as Grid;
-        var border = grid?.Children[0] as Border;
-        var collectionView = border?.Content as CollectionView;
+        // LET OP:  de lijst bevat "CampSite"-objecten, geen "CampSiteDto"-objecten.
+        // Daarom halen we ze op met 'as CampSite'.
+        var selectedCampWrapper = e.CurrentSelection.FirstOrDefault() as CampSite;
+
+        if (selectedCampWrapper == null) return;
+
+        // Bij het verzenden naar de detailpagina verzenden we de pure gegevens (DTO) in de Wrapper.
+        // Omdat CampDetailPage 'CampSiteDto' verwacht.
+        var navigationParameter = new Dictionary<string, object>
+        {
+            { "Camp", selectedCampWrapper.Data } 
+        };
 
         
-        var camp = collectionView?.BindingContext as CampSite;
+        await Shell.Current.GoToAsync(nameof(CampDetailPage), navigationParameter);
 
-        if (camp != null && camp.Comments.Count > 0)
-        {
-            int targetIndex = (int)(e.NewValue * (camp.Comments.Count - 1));
-            var targetComment = camp.Comments[targetIndex];
-            collectionView.ScrollTo(targetComment, position: ScrollToPosition.Start, animate: false);
-        }
+        
+        ((CollectionView)sender).SelectedItem = null;
     }
 
-   
-    
+
+
 }
