@@ -21,7 +21,7 @@ public partial class ProfilePage : ContentPage
         
         if (BindingContext is ProfileViewModel vm)
         {
-           
+            
             await vm.LoadUserDataAsync();
         }
     }

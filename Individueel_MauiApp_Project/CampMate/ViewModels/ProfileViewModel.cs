@@ -45,10 +45,12 @@ namespace CampMate.ViewModels
 
         public ProfileViewModel(AuthService authService)
         {
-            // als default een gebruiker instellen (dit zou normaal van een service komen maar nu om alleen te testen )
+            
             _authService = authService;
             CurrentUser = new User();
-            IsEditing = false; 
+            IsEditing = false;
+
+           
         }
 
 
@@ -71,6 +73,7 @@ namespace CampMate.ViewModels
                     ProfileImage = userDto.ProfileImage
                 };
                 OnPropertyChanged(nameof(ProfileImageUrl));
+                OnPropertyChanged(nameof(CurrentUser));
             }
         }
 

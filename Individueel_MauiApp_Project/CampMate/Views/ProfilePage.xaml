@@ -4,6 +4,7 @@
              x:Class="CampMate.Views.ProfilePage"
              xmlns:vm="clr-namespace:CampMate.ViewModels"
              xmlns:models="clr-namespace:CampMate.Models"
+             xmlns:converters="clr-namespace:CampMate.Resources.Converters"
              x:DataType="vm:ProfileViewModel"
              Style="{StaticResource InternalPageStyle}"
              Title="Mijn Profiel"
