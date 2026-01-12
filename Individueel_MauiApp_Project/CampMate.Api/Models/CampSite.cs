@@ -23,6 +23,8 @@ namespace CampMate.Api.Models
         public int UserId { get; set; } // FK
 
         [ForeignKey("UserId")] 
-        public User? User { get; set; } 
+        public User? User { get; set; }
+
+        public string? WebsiteUrl { get; set; }
     }
 }

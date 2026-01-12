@@ -39,11 +39,16 @@ namespace CampMate.Api.Data
                     Facilities="zwembad,fietsverhuur,Elektrisch",
                     Price=50,
                     Image="kampa.jpg",
-                    UserId=admin.Id
+                    UserId=admin.Id,
+                    WebsiteUrl="https://www.camping-valkenburg.com/"
+
                 },
-                new CampSite { Name="Camping Jungfrau", Location="Lauterbrunnen, Zwitserland", Facilities="Elektrisch", Price=30, Image="kampb.jpg" ,UserId=admin.Id},
-                new CampSite { Name="Camping Village Roma Capitol", Location="Rome, Italië", Facilities="cafe,fietsverhuur", Price=50, Image="bg.jpg" ,UserId=admin.Id},
-                new CampSite { Name="Camping De La Seine", Location="Jumièges, Frankrijk", Facilities="Elektrisch", Price=30, Image="kampa.jpg" ,UserId=admin.Id}
+                new CampSite 
+                { 
+                    Name="Camping Jungfrau", Location="Lauterbrunnen, Zwitserland", Facilities="Elektrisch", Price=30, Image="kampb.jpg" ,UserId=admin.Id,WebsiteUrl="https://www.campingjungfrau.swiss"
+                },
+                new CampSite { Name="Camping Village Roma Capitol", Location="Rome, Italië", Facilities="cafe,fietsverhuur", Price=50, Image="bg.jpg" ,UserId=admin.Id,WebsiteUrl="https://www.campingcapitol.com/en/"},
+                new CampSite { Name="Camping De La Seine", Location="Jumièges, Frankrijk", Facilities="Elektrisch", Price=30, Image="kampa.jpg" ,UserId=admin.Id,WebsiteUrl="https://www.campingdelaseine.com/"}
             };
             context.CampSites.AddRange(camps);
             context.SaveChanges();

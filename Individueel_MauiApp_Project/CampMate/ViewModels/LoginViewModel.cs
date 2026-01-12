@@ -25,7 +25,7 @@ namespace CampMate.ViewModels
 
             // Standaardwaarden voor test
             UserEmail = "mehmet@campmate.com";
-            UserPassword = "321";
+            UserPassword = "1234";
             IsLogoutMessageVisible = false;
         }
 

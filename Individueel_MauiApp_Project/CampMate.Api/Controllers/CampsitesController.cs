@@ -24,6 +24,7 @@ namespace CampMate.API.Controllers
             
             var camps = await _context.CampSites
                 .Include(c => c.Comments)
+                .Include(c => c.User)
                 .ToListAsync();
 
             // Entiteit -> DTO omzetten
@@ -38,7 +39,10 @@ namespace CampMate.API.Controllers
                 Image = c.Image,
                 TotalStars = c.TotalStars,
                 RatingCount = c.RatingCount,
-              
+                WebsiteUrl = c.WebsiteUrl,
+                UserName = c.User != null ? c.User.Name : "Onbekend",
+
+
                 Comments = c.Comments.Select(cm => new CommentDto
                 {
                     Id = cm.Id,
@@ -58,6 +62,7 @@ namespace CampMate.API.Controllers
             
             var camp = await _context.CampSites
                 .Include(c => c.Comments)
+                .Include(c => c.User)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (camp == null)
@@ -77,6 +82,8 @@ namespace CampMate.API.Controllers
                 Image = camp.Image,
                 TotalStars = camp.TotalStars,
                 RatingCount = camp.RatingCount,
+                WebsiteUrl = camp.WebsiteUrl,
+                UserName = camp.User != null ? camp.User.Name : "Onbekend",
 
                 // We zetten de opmerkingen om in een lijst.
                 Comments = camp.Comments.Select(cm => new CommentDto
@@ -162,8 +169,10 @@ namespace CampMate.API.Controllers
                 Image = campDto.Image,
 
                 UserId = campDto.UserId,
+                WebsiteUrl = campDto.WebsiteUrl,
 
-               
+
+
                 TotalStars = 0,
                 RatingCount = 0,
                 IsFavorite = false
