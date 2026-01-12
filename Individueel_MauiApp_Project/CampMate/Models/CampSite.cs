@@ -58,6 +58,8 @@ namespace CampMate.Models
         public decimal Price => Data.Price;
         public string ImagePath => Data.Image;
 
+        public string? WebsiteUrl => Data.WebsiteUrl;
+
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 

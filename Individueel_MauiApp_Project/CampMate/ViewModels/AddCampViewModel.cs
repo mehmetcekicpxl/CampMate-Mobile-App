@@ -45,6 +45,10 @@ namespace CampMate.ViewModels
         [ObservableProperty]
         private bool _isBusy; // Om dubbele klikken te voorkomen
 
+
+        [ObservableProperty]
+        private string _websiteUrl;
+
         public AddCampViewModel(CampService campService, AuthService authService)
         {
             _campService = campService;
@@ -111,7 +115,8 @@ namespace CampMate.ViewModels
                     Facilities = GetSelectedFacilities(),
                     Price = int.TryParse(PriceText, out var price) ? price : 0,
                     Image = serverImageName,
-                    UserId = currentUserId
+                    UserId = currentUserId,
+                    WebsiteUrl = WebsiteUrl
                 };
 
                 // 3. Opslaan via Service
@@ -172,6 +177,7 @@ namespace CampMate.ViewModels
             HasFietsverhuur = false;
             HasElektriciteit = false;
             HasCafe = false;
+            WebsiteUrl = string.Empty;
         }
     }
 }

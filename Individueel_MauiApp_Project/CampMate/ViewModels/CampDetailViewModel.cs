@@ -27,7 +27,7 @@ namespace CampMate.ViewModels
         [NotifyPropertyChangedFor(nameof(CampImageUrl))]
         private CampSiteDto _camp;
 
-
+        //om te helpen bij het debuggen van machtigingen
         private string _debugInfo;
         public string DebugInfo
         {
@@ -118,7 +118,7 @@ namespace CampMate.ViewModels
 
             // Eigenaar OF Admin?
             CanDeleteCamp = (Camp.UserId == currentUserId) || isAdmin;
-
+            // Voor debuggen
             DebugInfo = $"Kamp-eigenaar ID: {Camp.UserId} | Mijn ID: {currentUserId} | Is Admin ?: {isAdmin}";
         }
 
@@ -132,8 +132,17 @@ namespace CampMate.ViewModels
 
                 foreach (var c in Camp.Comments)
                 {
+
+                    //bool canDeleteThisComment = (c.UserId == currentUserId) || isAdmin;
+
+                   
+                    bool isOwnerOrAdmin = (c.UserId == currentUserId) || isAdmin;
+
+                   
+                    bool isRatingMessage = c.Text.Contains("★");
+
                     
-                    bool canDeleteThisComment = (c.UserId == currentUserId) || isAdmin;
+                    bool canDelete = isOwnerOrAdmin && !isRatingMessage;
 
                     CommentsList.Add(new CommentItemViewModel
                     {
@@ -141,7 +150,7 @@ namespace CampMate.ViewModels
                         UserName = c.UserName,
                         Text = c.Text,
                         UserId = c.UserId,
-                        CanDeleteComment = canDeleteThisComment
+                        CanDeleteComment = canDelete
                     });
                 }
             }
@@ -297,12 +306,35 @@ namespace CampMate.ViewModels
                     UserName = userDto.Name,
                     Text = $"{ratingToSend}  ster werd toegekend ★", // Het moet hetzelfde formaat hebben als in de backend.
                     UserId = userDto.Id,
-                    CanDeleteComment = true,
+                    CanDeleteComment = false,
                   
                 });
 
                 SelectedRatingIndex = -1; // Keuze resetten
                 await Shell.Current.DisplayAlert("Bedankt", $" Je hebt  {ratingToSend}  ster gegeven!", "OK");
+            }
+        }
+
+        [RelayCommand]
+        async Task OpenWebsiteAsync()
+        {
+            if (string.IsNullOrWhiteSpace(Camp?.WebsiteUrl)) return;
+
+            try
+            {
+                string url = Camp.WebsiteUrl;
+                
+                if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+                {
+                    url = "https://" + url;
+                }
+
+                
+                await Browser.Default.OpenAsync(url, BrowserLaunchMode.SystemPreferred);
+            }
+            catch
+            {
+                await Shell.Current.DisplayAlert("Fout", "De link kan niet worden geopend.", "OK");
             }
         }
     }

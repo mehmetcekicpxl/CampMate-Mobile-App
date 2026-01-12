@@ -39,6 +39,15 @@
 
                 </VerticalStackLayout>
             </Border>
+            <Border StrokeShape="RoundRectangle 15" BackgroundColor="#1E2A28" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Website Link (Optioneel)" TextColor="White" FontAttributes="Bold" FontSize="18"/>
+                    <Entry Placeholder="www.voorbeeld-kamp.com" 
+               Text="{Binding WebsiteUrl}" 
+               TextColor="White"
+               Keyboard="Url"/>
+                </VerticalStackLayout>
+            </Border>
 
             <Border StrokeShape="RoundRectangle 15" BackgroundColor="#1E2A28" Padding="15">
                 <VerticalStackLayout Spacing="10">

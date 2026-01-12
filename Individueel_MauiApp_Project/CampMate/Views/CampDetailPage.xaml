@@ -17,6 +17,7 @@
 
             <Label Text="{Binding Camp.Name}" FontSize="24" FontAttributes="Bold" TextColor="Black"/>
             <Label Text="{Binding Camp.Location}" FontSize="18" TextColor="Gray"/>
+            
 
             <HorizontalStackLayout Spacing="15">
                 <Label Text="{Binding Camp.Price, StringFormat='{0} € / Nacht'}" 
@@ -34,11 +35,33 @@
             <Label Text="Faciliteiten" FontAttributes="Bold" FontSize="16"/>
             <Label Text="{Binding Camp.Facilities}" TextColor="#2A9D8F"/>
 
-            <Label Text="{Binding DebugInfo}" 
+            <!--<Label Text="{Binding DebugInfo}" 
                    TextColor="Red" 
                    FontAttributes="Bold" 
                    HorizontalOptions="Center"
-                   BackgroundColor="Yellow"/>
+                   BackgroundColor="Yellow"/>-->
+            
+            <HorizontalStackLayout Spacing="5" Margin="0,5,0,0">
+                <Label Text="Gedeeld door:" TextColor="Black" FontAttributes="Bold"/>
+                <Label Text="{Binding Camp.UserName}" TextColor="#2A9D8F" FontAttributes="Italic"/>
+            </HorizontalStackLayout>
+            <Button Text="🌐 Ga naar de website"
+        Command="{Binding OpenWebsiteCommand}"
+        BackgroundColor="#4A90E2"
+        TextColor="White"
+        FontAttributes="Bold"
+        CornerRadius="20"
+        HeightRequest="45"
+        Margin="0,15,0,0">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding Camp.WebsiteUrl}" Value="{x:Null}">
+                        <Setter Property="IsVisible" Value="False"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding Camp.WebsiteUrl}" Value="">
+                        <Setter Property="IsVisible" Value="False"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
 
             <Button Text="DEZE KAMP VERWIJDEREN 🗑️"
                     BackgroundColor="#FF4444"
@@ -104,11 +127,11 @@
                                 <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                                     <Label Text="{Binding UserName}" FontAttributes="Bold" TextColor="#2A9D8F"/>
                                     <Label Text="{Binding Text}" TextColor="Black"/>
-                                    <Label Text="{Binding UserId, StringFormat='Yazan ID: {0}'}" FontSize="10" TextColor="Gray"/>
+                                    
                                 </VerticalStackLayout>
 
                                 <Button Grid.Column="1"
-                                        Text="Verwijderen"
+                                        Text="🗑️"
                                         BackgroundColor="#FF4444"
                                         TextColor="White"
                                         FontSize="12"
