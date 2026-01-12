@@ -1,56 +1,91 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:behaviors="clr-namespace:CampMate.Behaviors"
              x:Class="CampMate.Views.RegisterPage"
+             Style="{StaticResource InternalPageStyle}"
              Title="Register">
+    <Grid>
+       
 
-    <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center">
+        <Border StrokeShape="RoundRectangle 20"
+                BackgroundColor="#99000000"
+                Margin="20, 40, 20, 40"
+                Padding="20"
+                VerticalOptions="Center">
 
-        <Label Text="Maak een nieuw account aan" 
-           FontSize="28" 
-           HorizontalOptions="Center" 
-           TextColor="{StaticResource Primary}"
-           Margin="0,0,0,20"/>
+            <ScrollView>
+                <VerticalStackLayout Spacing="15">
 
-        <Entry x:Name="NameEntry" 
-           Placeholder="Naam"
-           IsSpellCheckEnabled="False"
-           IsTextPredictionEnabled="False"/>
+                    <Label Text="Maak een nieuw account aan"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="White"
+                           Margin="0,0,0,20"/>
 
-        <Entry x:Name="EmailEntry" 
-           Placeholder="E-mail Adress" 
-           Keyboard="Email"
-           IsSpellCheckEnabled="False"
-           IsTextPredictionEnabled="False"/>
+                    <Entry Placeholder="Naam" Text="{Binding Name}" TextColor="White" PlaceholderColor="#CCCCCC"/>
 
-        <Entry x:Name="PhoneEntry" 
-           Placeholder="Telefoonnummer" 
-           Keyboard="Telephone"
-           IsSpellCheckEnabled="False"
-           IsTextPredictionEnabled="False"/>
+                    <Entry Placeholder="E-mail Adress" Text="{Binding Email}" Keyboard="Email" TextColor="White" PlaceholderColor="#CCCCCC">
+                        <Entry.Behaviors>
+                            <behaviors:EmailValidationBehavior />
+                        </Entry.Behaviors>
+                    </Entry>
 
-        <Entry x:Name="LocationEntry" 
-           Placeholder="Woonplaats"
-           IsSpellCheckEnabled="False"
-           IsTextPredictionEnabled="False"/>
+                    <Label FontSize="11" Margin="5,-5,0,15" LineBreakMode="WordWrap">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Tip: " TextColor="#FFCC00" FontAttributes="Bold"/>
+                                <Span Text="Als het rood is, klopt het formaat niet." TextColor="#CCCCCC"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
 
-        <Entry x:Name="PasswordEntry" 
-           Placeholder="Wachtwoord" 
-           IsPassword="True"/>
+                    <Entry Placeholder="Telefoonnummer" Text="{Binding PhoneNumber}" Keyboard="Telephone" TextColor="White" PlaceholderColor="#CCCCCC"/>
+                    <Entry Placeholder="Woonplaats" Text="{Binding Location}" TextColor="White" PlaceholderColor="#CCCCCC"/>
 
-        <Entry x:Name="ConfirmPasswordEntry" 
-           Placeholder="Wachtwoord herhalen" 
-           IsPassword="True"/>
+                    <Entry Placeholder="Wachtwoord" Text="{Binding Password}" IsPassword="True" TextColor="White" PlaceholderColor="#CCCCCC">
+                        <Entry.Behaviors>
+                            <behaviors:PasswordValidationBehavior />
+                        </Entry.Behaviors>
+                    </Entry>
 
-        <Button Text="Registeren" 
-            Clicked="OnRegisterCompleted" 
-            Margin="0, 20, 0, 0"
-            BackgroundColor="{StaticResource Primary}"/>
+                    <Label FontSize="12" HorizontalOptions="Start" Margin="5,-5,0,15">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Sterkte: " TextColor="#CCCCCC"/>
+                                <Span Text="Zwak" TextColor="#FF5555" FontAttributes="Bold"/>
+                                <Span Text=", " TextColor="#CCCCCC"/>
+                                <Span Text="Gemiddeld" TextColor="#FFCC00" FontAttributes="Bold"/>
+                                <Span Text=", " TextColor="#CCCCCC"/>
+                                <Span Text="Sterk" TextColor="#55FF55" FontAttributes="Bold"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
 
-        <Button Text="Ga Naar Login" 
-            Clicked="OnBackToLoginClicked" 
-            Style="{StaticResource TextButton}" />
+                    <Entry Placeholder="Wachtwoord herhalen" Text="{Binding ConfirmPassword}" IsPassword="True" TextColor="White" PlaceholderColor="#CCCCCC">
+                        <Entry.Behaviors>
+                            <behaviors:PasswordValidationBehavior />
+                        </Entry.Behaviors>
+                    </Entry>
 
-    </VerticalStackLayout>
+                    <Button Text="Registeren"
+                            Command="{Binding RegisterCommand}"
+                            Margin="0, 20, 0, 0"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            HeightRequest="50"/>
 
+                    <Button Text="Ga Naar Login"
+                            Command="{Binding GoToLoginCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            FontSize="14"/>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+    </Grid>
 </ContentPage>

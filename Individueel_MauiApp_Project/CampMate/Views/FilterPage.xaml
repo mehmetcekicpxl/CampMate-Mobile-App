@@ -8,38 +8,38 @@
 
             <Label Text="Select Location" FontAttributes="Bold"/>
 
-            <Picker  x:Name="LocationPicker">
-                <Picker.Items>
-                    
-                    
-                    
-                </Picker.Items>
+            <Picker ItemsSource="{Binding Locations}"
+                    SelectedItem="{Binding SelectedLocation}"
+                    Title="Kies een locatie">
             </Picker>
 
             <Label Text="Facilities" FontAttributes="Bold"/>
 
-            <VerticalStackLayout x:Name="FacilitiesCheckBoxGroup" Spacing="10">
+            <VerticalStackLayout Spacing="10">
                 <HorizontalStackLayout>
-                    <CheckBox x:Name="ZwembadCheckBox"/>
-                    <Label Text="Zwembad"/>
+                    <CheckBox IsChecked="{Binding HasZwembad}"/>
+                    <Label Text="Zwembad" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
 
-               
                 <HorizontalStackLayout>
-                    <CheckBox x:Name="FietsverhuurCheckBox"/>
-                    <Label Text="Fietsverhuur"/>
+                    <CheckBox IsChecked="{Binding HasFietsverhuur}"/>
+                    <Label Text="Fietsverhuur" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
+
                 <HorizontalStackLayout>
-                    <CheckBox x:Name="ElektriciteitCheckBox"/>
-                    <Label Text="Elektriciteit"/>
+                    <CheckBox IsChecked="{Binding HasElektriciteit}"/>
+                    <Label Text="Elektriciteit" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
+
                 <HorizontalStackLayout>
-                    <CheckBox x:Name="CafeCheckBox"/>
-                    <Label Text="Cafe"/>
+                    <CheckBox IsChecked="{Binding HasCafe}"/>
+                    <Label Text="Cafe" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
             </VerticalStackLayout>
 
-            <Button Text="Apply Filters" Clicked="ApplyFilters_Clicked"/>
+            <Button Text="Apply Filters" 
+                    Command="{Binding ApplyFiltersCommand}"/>
+
         </VerticalStackLayout>
     </ScrollView>
 

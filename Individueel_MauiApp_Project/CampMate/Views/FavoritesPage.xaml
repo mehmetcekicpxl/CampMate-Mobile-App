@@ -16,6 +16,7 @@
 
         <CollectionView Grid.Row="1"
                         x:Name="FavoritesCollectionView"
+                        ItemsSource="{Binding FavoriteCamps}" 
                         Margin="10, 10, 10, 0">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:CampSite">
@@ -30,16 +31,16 @@
                                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Black}}"/>
 
                                 <ImageButton Grid.Column="1" 
-                                 HeightRequest="30" 
-                                 WidthRequest="30"
-                                 Clicked="RemoveFavorite_Clicked"
-                                 CommandParameter="{Binding .}"
-                                 ToolTipProperties.Text="Verwijderen uit favorieten">
+                                             HeightRequest="30" 
+                                             WidthRequest="30"
+                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveFavoriteCommand}"
+                                             CommandParameter="{Binding .}"
+                                             ToolTipProperties.Text="Verwijderen uit favorieten">
                                     <ImageButton.Source>
                                         <FontImageSource FontFamily="MDI"
-                                         Glyph="&#xF05E8;" 
-                                         Color="{StaticResource Error}" 
-                                         Size="28"/>    
+                                                         Glyph="&#xF05E8;" 
+                                                         Color="{StaticResource Error}" 
+                                                         Size="28"/>
                                     </ImageButton.Source>
                                 </ImageButton>
                             </Grid>

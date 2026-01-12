@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:CampMate.ViewModels"
              xmlns:models="clr-namespace:CampMate.Models"
              x:DataType="vm:ProfileViewModel"
+             Style="{StaticResource InternalPageStyle}"
              Title="Mijn Profiel"
              >
 

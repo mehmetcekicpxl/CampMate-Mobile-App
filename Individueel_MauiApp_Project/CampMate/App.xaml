@@ -13,8 +13,11 @@
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converters:BoolToFavoriteColorConverter x:Key="BoolToFavoriteColorConverter" />
             <converters:BoolToHeartIconConverter x:Key="BoolToHeartIconConverter"/>
-            
-            
+            <Style x:Key="InternalPageStyle" TargetType="ContentPage">
+                <Setter Property="BackgroundImageSource" Value="winter.png" />
+            </Style>
+
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
