@@ -46,10 +46,9 @@ namespace CampMate.Models
             }
         }
 
-        public double TotalStars { get; set; } = 0;
-        public int RatingCount { get; set; } = 0;
-
-        public double AverageStars => RatingCount > 0 ? TotalStars / RatingCount : 0;
+        public double AverageStars => Data.RatingCount > 0
+              ? (double)Data.TotalStars / Data.RatingCount
+              : 0;
 
         public ObservableCollection<Comment> Comments { get; set; } = new ObservableCollection<Comment>();
 
@@ -65,6 +64,7 @@ namespace CampMate.Models
         public void RefreshUI()
         {
             OnPropertyChanged(nameof(AverageStars));
+            OnPropertyChanged(nameof(Data));
         }
 
         public class Comment

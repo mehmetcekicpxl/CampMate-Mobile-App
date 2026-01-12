@@ -39,15 +39,15 @@ namespace CampMate
                 BaseAddress = new Uri("http://10.0.2.2:5225/api/")
             });
 
-            // HomePage register (DI)
-            builder.Services.AddSingleton<HomePage>();
 
             // AuthService registreren
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddSingleton<CampService>();
 
 
-            // Pagina's opslaan (We gaan nu constructor injection gebruiken)
+            //Views
+            // HomePage register (DI)
+            builder.Services.AddSingleton<HomePage>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<RegisterPage>();
             builder.Services.AddTransient<SettingsPage>();
@@ -58,6 +58,14 @@ namespace CampMate
             builder.Services.AddTransient<CampDetailPage>();   
             builder.Services.AddTransient<CampDetailViewModel>();
             builder.Services.AddTransient<AddCampPage>();
+
+            // ViewModels
+            builder.Services.AddTransient<HomePageViewModel>();
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddTransient<RegisterViewModel>();
+            builder.Services.AddTransient<AddCampViewModel>();
+            builder.Services.AddTransient<FavoritesViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();

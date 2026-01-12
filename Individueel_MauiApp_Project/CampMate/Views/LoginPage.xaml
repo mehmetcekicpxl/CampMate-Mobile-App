@@ -1,42 +1,78 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:behaviors="clr-namespace:CampMate.Behaviors"
              x:Class="CampMate.Views.LoginPage"
-             Title="Login">
+             Title="Login"
+             Shell.NavBarIsVisible="False">
+    <Grid>
 
-    <VerticalStackLayout Padding="20">
-        <Label Text="LOGIN" FontSize="28" HorizontalOptions="Center" FontAttributes="Bold"/>
+        <Image Source="bg.jpg" 
+               Aspect="AspectFill" 
+               HorizontalOptions="Fill" 
+               VerticalOptions="Fill"/>
 
-        <Entry Placeholder="Email" 
-               Text="{Binding UserEmail, Mode=TwoWay, UpdateSourceEventName=TextChanged}" 
-               Keyboard="Email"  IsSpellCheckEnabled="False" 
-       IsTextPredictionEnabled="False"
-       />
+        
 
-        <Entry Placeholder="Password" 
-               IsPassword="True" 
-               Margin="0,20,0,20"
-               Text="{Binding UserPassword, Mode=TwoWay, UpdateSourceEventName=TextChanged}" IsSpellCheckEnabled="False" 
-       IsTextPredictionEnabled="False"
-       />
+        <ScrollView>
+            <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
 
-        <Button Text="Login" Clicked="OnLoginClicked" Margin="0,20,0,20"/>
-        <Button Text="Register" Clicked="OnRegisterClicked" BackgroundColor="Green"/>
-        <Border x:Name="LogoutMessage" 
-        IsVisible="False" 
-        BackgroundColor="{StaticResource Error}" 
-        StrokeShape="RoundRectangle 8" 
-        Padding="15" 
-        Margin="0, 40, 0, 0"
-        HorizontalOptions="Fill"
-        >
-            <StackLayout Orientation="Horizontal" Spacing="10">
-                <Image Source="info.png" WidthRequest="20" HeightRequest="20" />
-                <Label Text="Je bent uitgelogd" 
-               TextColor="{StaticResource White}" 
-               VerticalOptions="Center" 
-               FontSize="16" />
-            </StackLayout>
-        </Border>
-    </VerticalStackLayout>
-    
+                <Image Source="campmatelogo2.png" Opacity="0.8" HeightRequest="170"  Margin="0,0,30,-10"/>
+
+                <Label Text="Welkom Terug!" 
+                       FontSize="32" 
+                       FontAttributes="Bold" 
+                       TextColor="White" 
+                       HorizontalOptions="Center"/>
+
+                <Border StrokeShape="RoundRectangle 10" BackgroundColor="#80FFFFFF" Padding="5">
+                    <Entry Placeholder="Email" 
+                           Text="{Binding UserEmail, Mode=TwoWay}" 
+                           TextColor="Black" 
+                           PlaceholderColor="#333333"
+                           Keyboard="Email"  
+                           IsSpellCheckEnabled="False" 
+                           IsTextPredictionEnabled="False">
+                        <Entry.Behaviors>
+                            <behaviors:EmailValidationBehavior />
+                        </Entry.Behaviors>
+                    </Entry>
+                </Border>
+
+                <Label FontSize="11" Margin="5,-5,0,15" LineBreakMode="WordWrap">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Let op: " TextColor="#FFCC00" FontAttributes="Bold"/>
+                            <Span Text="Rood" TextColor="#FF5555" FontAttributes="Bold"/>
+                            <Span Text=" betekent ongeldig formaat." TextColor="#DDDDDD"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <Border StrokeShape="RoundRectangle 10" BackgroundColor="#80FFFFFF" Padding="5">
+                    <Entry Placeholder="Wachtwoord" 
+                           IsPassword="True" 
+                           Text="{Binding UserPassword, Mode=TwoWay}" 
+                           TextColor="Black" 
+                           PlaceholderColor="#333333"/>
+                </Border>
+
+                <Button Text="Login" 
+                        Command="{Binding LoginCommand}" 
+                        BackgroundColor="{StaticResource Primary}" 
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="50"/>
+
+                <Button Text="Nog geen account? Registreer hier" 
+                        Command="{Binding RegisterCommand}" 
+                        BackgroundColor="Transparent" 
+                        TextColor="White"
+                        FontSize="14"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+
 </ContentPage>

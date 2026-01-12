@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:CampMate.Resources.Converters"
              x:Class="CampMate.Views.HomePage"
-             Title="CampMate Home">
+             Title="CampMate Home" Style="{StaticResource InternalPageStyle}">
 
-  
+    <ContentPage.Resources>
+        <ResourceDictionary>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ScrollView x:Name="MainScrollView">
         <VerticalStackLayout Padding="10" Spacing="10">
@@ -18,26 +22,30 @@
                 <Entry Placeholder="Search for a name or region..." 
                        TextColor="Black" 
                        PlaceholderColor="Gray"
-                       TextChanged="SearchEntry_TextChanged"
+                       Text="{Binding SearchText, Mode=TwoWay}"
                        VerticalOptions="Center"/>
             </Border>
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10" HeightRequest="45">
                 <Button Text="Filters" Grid.Column="0" 
                         BackgroundColor="#2A9D8F" TextColor="White" 
-                        CornerRadius="20" Clicked="FilterButton_Clicked"
+                        CornerRadius="20" 
+                        Command="{Binding FilterPageCommand}"
                         ImageSource="{FontImageSource FontFamily=MDI, Glyph='&#xF0232;', Color=White, Size=18}"/>
 
                 <Button Text="Add New Camp" Grid.Column="1" 
                         BackgroundColor="#E76F51" TextColor="White" 
-                        CornerRadius="20" Clicked="AddNewCampButton_Clicked"
+                        CornerRadius="20" 
+                        Command="{Binding AddNewCampCommand}"
                         ImageSource="{FontImageSource FontFamily=MDI, Glyph='&#xF0415;', Color=White, Size=18}"/>
             </Grid>
 
             <CollectionView x:Name="CampListView" 
                             Margin="0,10,0,0"
                             SelectionMode="Single"
-                            SelectionChanged="OnCampSelected">
+                            ItemsSource="{Binding CampList}"
+                            SelectionChangedCommand="{Binding GoToDetailsCommand}"
+                            SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}">
 
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="15"/>
@@ -68,7 +76,9 @@
                                             HorizontalOptions="End" VerticalOptions="Start" 
                                             Margin="10" Padding="5" HeightRequest="40" WidthRequest="40">
 
-                                        <ImageButton Clicked="FavoriteButton_Clicked" CommandParameter="{Binding .}" BackgroundColor="Transparent">
+                                        <ImageButton Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleFavoriteCommand}"
+                                                     CommandParameter="{Binding .}" 
+                                                     BackgroundColor="Transparent">
                                             <ImageButton.Source>
                                                 <FontImageSource FontFamily="MDI" 
                                                                  Glyph="{Binding IsFavorite, Converter={StaticResource BoolToHeartIconConverter}}" 
@@ -83,12 +93,14 @@
                                     <Grid ColumnDefinitions="*, Auto">
                                         <Label Text="{Binding Name}" Grid.Column="0" FontSize="18" FontAttributes="Bold" TextColor="Black" LineBreakMode="TailTruncation"/>
 
-                                        <Label Text=" Meer Info >>>" 
-                                               Grid.Column="1" 
-                                               TextColor="#2A9D8F" 
-                                               FontSize="14" 
-                                               FontAttributes="Bold"
-                                               VerticalOptions="Center"/>   
+                                        <StackLayout Orientation="Horizontal" Spacing="2" Grid.Column="1">
+                                            <Label Text="★" TextColor="#E76F51" FontSize="16"/>
+                                            <Label Text="{Binding AverageStars, StringFormat='{0:F1}'}" 
+                                                   TextColor="#E76F51" 
+                                                   FontAttributes="Bold" 
+                                                   FontSize="16"/>
+                                        </StackLayout>
+
                                     </Grid>
 
                                     <Label Text="{Binding Location}" FontSize="14" TextColor="Gray" Margin="0,2,0,0"/>
