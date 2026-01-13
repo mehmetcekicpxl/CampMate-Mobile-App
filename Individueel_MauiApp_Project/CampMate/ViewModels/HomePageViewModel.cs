@@ -88,7 +88,7 @@ namespace CampMate.ViewModels
                     _allCamps.Clear();
                     CampList.Clear();
 
-                    var localImages = new List<string> { "kampa.jpg", "kampb.jpg", "bg.jpg", "dotnet_bot.png" };
+                    var localImages = new List<string> { "kampa.jpg", "kampb.jpg", "bg.jpg", "campmatelogo.png" };
 
                     foreach (var dto in dtos)
                     {
@@ -101,6 +101,8 @@ namespace CampMate.ViewModels
                         }
 
                         // Favoriet status instellen
+                        // eerst op false zetten om oude favorieten te wissen daarna controlleren van huide gebruiker is dat die favoriet is
+                        dto.IsFavorite = false;
                         if (favoriteNames.Contains(dto.Name))
                         {
                             dto.IsFavorite = true;
@@ -184,7 +186,7 @@ namespace CampMate.ViewModels
 
         private void AddNewCampToList(CampSiteDto newDto)
         {
-            var localImages = new List<string> { "kampa.jpg", "kampb.jpg", "bg.jpg", "dotnet_bot.png" };
+            var localImages = new List<string> { "kampa.jpg", "kampb.jpg", "bg.jpg", "campmatelogo.png" };
             if (!string.IsNullOrEmpty(newDto.Image) && !newDto.Image.StartsWith("http") && !localImages.Contains(newDto.Image))
             {
                 newDto.Image = $"http://10.0.2.2:5225/images/{newDto.Image}";

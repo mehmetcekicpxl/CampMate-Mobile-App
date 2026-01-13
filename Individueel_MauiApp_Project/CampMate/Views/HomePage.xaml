@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:CampMate.Resources.Converters"
              x:Class="CampMate.Views.HomePage"
-             Title="CampMate Home" Style="{StaticResource InternalPageStyle}">
+             Title="Home Pagina "   Style="{StaticResource InternalPageStyle}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -13,7 +13,7 @@
     <ScrollView x:Name="MainScrollView">
         <VerticalStackLayout Padding="10" Spacing="10">
 
-            <Label Text="HOME" 
+            <Label Text="WELKOM BIJ CAMPMATE APP!" 
                    FontSize="24" FontAttributes="Bold"
                    VerticalOptions="Center" 
                    HorizontalOptions="Center" Margin="0,10,0,20" />

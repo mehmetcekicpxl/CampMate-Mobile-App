@@ -154,7 +154,7 @@ namespace CampMate.API.Controllers
            
             if (string.IsNullOrEmpty(campDto.Image))
             {
-                campDto.Image = "dotnet_bot.png";
+                campDto.Image = "campmatelogo.png";
             }
 
             // 1. Van DTO naar databasemodel converteren

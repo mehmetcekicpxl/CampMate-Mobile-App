@@ -61,10 +61,10 @@ namespace CampMate.ViewModels
             get
             {
                
-                if (Camp == null || string.IsNullOrEmpty(Camp.Image)) return "dotnet_bot.png";
+                if (Camp == null || string.IsNullOrEmpty(Camp.Image)) return "campmatelogo.png";
 
                
-                var localImages = new List<string> { "kampa.jpg", "kampb.jpg", "bg.jpg", "dotnet_bot.png" };
+                var localImages = new List<string> { "kampa.jpg", "kampb.jpg", "bg.jpg", "campmatelogo.png" };
 
                
                

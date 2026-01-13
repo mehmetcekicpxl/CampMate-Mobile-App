@@ -91,7 +91,7 @@ namespace CampMate.ViewModels
             }
 
             IsBusy = true;
-            string serverImageName = "dotnet_bot.png";
+            string serverImageName = "campmatelogo.png";
 
             try
             {
