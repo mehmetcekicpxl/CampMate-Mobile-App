@@ -1,6 +1,6 @@
 ﻿using CampMate.Api.Data;
 using CampMate.Shared.DTOs;
-using CampMate.Api.Models; 
+using CampMate.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,17 +17,30 @@ namespace CampMate.API.Controllers
             _context = context;
         }
 
-        // GET: api/campsites
+        // GET: api/campsites?userId=5
+        // Haal alle campings op en controleer of ze favoriet zijn voor de opgegeven gebruiker
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CampSiteDto>>> GetCampsites()
+        public async Task<ActionResult<IEnumerable<CampSiteDto>>> GetCampsites([FromQuery] int? userId)
         {
-            
+            // 1. Haal alle campings op inclusief relaties
             var camps = await _context.CampSites
                 .Include(c => c.Comments)
                 .Include(c => c.User)
                 .ToListAsync();
 
-            // Entiteit -> DTO omzetten
+            // 2. Haal de favorieten op als er een userId is meegegeven
+            int currentUserId = userId ?? 0;
+            var userFavoriteIds = new List<int>();
+
+            if (currentUserId > 0)
+            {
+                userFavoriteIds = await _context.Favorites
+                    .Where(f => f.UserId == currentUserId)
+                    .Select(f => f.CampSiteId)
+                    .ToListAsync();
+            }
+
+            // 3. Zet om naar DTO's
             var dtos = camps.Select(c => new CampSiteDto
             {
                 Id = c.Id,
@@ -42,6 +55,8 @@ namespace CampMate.API.Controllers
                 WebsiteUrl = c.WebsiteUrl,
                 UserName = c.User != null ? c.User.Name : "Onbekend",
 
+                // Controleer of dit kamp in de favorietenlijst staat
+                IsFavorite = userFavoriteIds.Contains(c.Id),
 
                 Comments = c.Comments.Select(cm => new CommentDto
                 {
@@ -55,22 +70,28 @@ namespace CampMate.API.Controllers
 
             return Ok(dtos);
         }
-        // GET: api/campsites/5
+
+        // GET: api/campsites/5?userId=1
         [HttpGet("{id}")]
-        public async Task<ActionResult<CampSiteDto>> GetCampSite(int id)
+        public async Task<ActionResult<CampSiteDto>> GetCampSite(int id, [FromQuery] int? userId)
         {
-            
             var camp = await _context.CampSites
                 .Include(c => c.Comments)
                 .Include(c => c.User)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (camp == null)
+            if (camp == null) return NotFound();
+
+            int currentUserId = userId ?? 0;
+            bool isFavorite = false;
+
+            // Controleer favoriet status
+            if (currentUserId > 0)
             {
-                return NotFound();
+                isFavorite = await _context.Favorites
+                    .AnyAsync(f => f.UserId == currentUserId && f.CampSiteId == id);
             }
 
-            // We zetten het databasemodel om naar DTO  (Frontend wacht daarop)
             var campDto = new CampSiteDto
             {
                 Id = camp.Id,
@@ -84,8 +105,7 @@ namespace CampMate.API.Controllers
                 RatingCount = camp.RatingCount,
                 WebsiteUrl = camp.WebsiteUrl,
                 UserName = camp.User != null ? camp.User.Name : "Onbekend",
-
-                // We zetten de opmerkingen om in een lijst.
+                IsFavorite = isFavorite,
                 Comments = camp.Comments.Select(cm => new CommentDto
                 {
                     Id = cm.Id,
@@ -99,122 +119,94 @@ namespace CampMate.API.Controllers
             return Ok(campDto);
         }
 
+        // POST: api/campsites/toggle-favorite/5?userId=1
+        // Eenvoudige favoriet toggle zonder ingewikkelde tokens
+        [HttpPost("toggle-favorite/{campId}")]
+        public async Task<IActionResult> ToggleFavorite(int campId, [FromQuery] int userId)
+        {
+            if (userId <= 0) return BadRequest("Ongeldige gebruiker ID.");
+
+            var existingFav = await _context.Favorites
+                .FirstOrDefaultAsync(f => f.UserId == userId && f.CampSiteId == campId);
+
+            if (existingFav != null)
+            {
+                // Verwijderen uit favorieten
+                _context.Favorites.Remove(existingFav);
+                await _context.SaveChangesAsync();
+                return Ok(new { IsFavorite = false });
+            }
+            else
+            {
+                // Toevoegen aan favorieten
+                var newFav = new Favorite { UserId = userId, CampSiteId = campId };
+                _context.Favorites.Add(newFav);
+                await _context.SaveChangesAsync();
+                return Ok(new { IsFavorite = true });
+            }
+        }
+
+        
+
         [HttpPost("comments")]
         public async Task<IActionResult> AddComment([FromBody] CreateCommentDto commentDto)
         {
-            var camp = await _context.CampSites
-                .Include(c => c.Comments)
-                .FirstOrDefaultAsync(c => c.Id == commentDto.CampSiteId);
+            var camp = await _context.CampSites.Include(c => c.Comments).FirstOrDefaultAsync(c => c.Id == commentDto.CampSiteId);
+            if (camp == null) return NotFound();
 
-            if (camp == null) return NotFound("Camping niet gevonden.");
+            string fixedText = string.IsNullOrWhiteSpace(commentDto.Text) ? $"{commentDto.Rating} Ster ★" : commentDto.Text;
 
-           
-            string fixedText = commentDto.Text;
-
-            if (string.IsNullOrWhiteSpace(fixedText))
-            {
-                if (commentDto.Rating > 0)
-                {
-                    
-                    fixedText = $"{commentDto.Rating} Ster gegeven ★";
-                }
-                else
-                {
-                    
-                    return BadRequest("Schrijf een beoordeling of geef een cijfer.");
-                }
-            }
-
-            var newComment = new Comment
+            camp.Comments.Add(new Comment
             {
                 UserName = commentDto.UserName,
-                Text = fixedText, 
+                Text = fixedText,
                 UserId = commentDto.UserId,
                 CampSiteId = commentDto.CampSiteId
-            };
+            });
 
-            camp.Comments.Add(newComment);
-
-            
-            if (commentDto.Rating > 0)
-            {
-                camp.TotalStars += commentDto.Rating;
-                camp.RatingCount++;
-            }
+            if (commentDto.Rating > 0) { camp.TotalStars += commentDto.Rating; camp.RatingCount++; }
 
             await _context.SaveChangesAsync();
-
-            return Ok(new { message = "De actie is geslaagd!" });
+            return Ok(new { message = "Succes" });
         }
 
-       
         [HttpPost]
         public async Task<ActionResult<CampSiteDto>> CreateCampSite(CampSiteDto campDto)
         {
-           
-            if (string.IsNullOrEmpty(campDto.Image))
-            {
-                campDto.Image = "campmatelogo.png";
-            }
-
-            // 1. Van DTO naar databasemodel converteren
             var campSite = new CampSite
             {
                 Name = campDto.Name,
                 Location = campDto.Location,
                 Facilities = campDto.Facilities,
                 Price = (int)campDto.Price,
-
-               
-                Image = campDto.Image,
-
+                Image = string.IsNullOrEmpty(campDto.Image) ? "campmatelogo.png" : campDto.Image,
                 UserId = campDto.UserId,
-                WebsiteUrl = campDto.WebsiteUrl,
-
-
-
-                TotalStars = 0,
-                RatingCount = 0,
-                IsFavorite = false
+                WebsiteUrl = campDto.WebsiteUrl
             };
-
-            // 2. Toevoegen aan database
             _context.CampSites.Add(campSite);
-            await _context.SaveChangesAsync(); 
-
-            
+            await _context.SaveChangesAsync();
             campDto.Id = campSite.Id;
-
             return CreatedAtAction("GetCampsites", new { id = campSite.Id }, campDto);
         }
 
-
-        // 1. KAMP VERWIJDEREN ENDPOINT
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCampSite(int id)
         {
             var camp = await _context.CampSites.FindAsync(id);
-            if (camp == null) return NotFound("Kamp niet gevonden.");
-
+            if (camp == null) return NotFound();
             _context.CampSites.Remove(camp);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Het kamp is verwijderd." });
+            return Ok();
         }
 
-        // 2. COMMENTAAR VERWIJDEREN ENDPOINT 
         [HttpDelete("comments/{commentId}")]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
-          
-
             var comment = await _context.Comments.FindAsync(commentId);
-
-            if (comment == null) return NotFound("Er zijn geen reacties gevonden.");
-
+            if (comment == null) return NotFound();
             _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
-
-            return Ok(new { message = "De reactie is verwijderd." });
+            return Ok();
         }
     }
 }

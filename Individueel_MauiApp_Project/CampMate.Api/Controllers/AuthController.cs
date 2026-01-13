@@ -21,18 +21,18 @@ namespace CampMate.Api.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto request)
         {
-           
+            // Controleer of het e-mailadres al bestaat
             if (await _context.Users.AnyAsync(u => u.Email == request.Email))
             {
                 return BadRequest("Dit e-mailadres wordt al gebruikt.");
             }
 
-          
+            // Maak een nieuwe gebruiker aan
             var user = new User
             {
                 Name = request.Name,
                 Email = request.Email,
-                Password = request.Password, 
+                Password = request.Password,
                 PhoneNumber = request.PhoneNumber,
                 Location = request.Location
             };
@@ -40,7 +40,7 @@ namespace CampMate.Api.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // 3. UserDto retourneren
+            // Retourneer UserDto
             return Ok(new UserDto
             {
                 Id = user.Id,
@@ -70,7 +70,7 @@ namespace CampMate.Api.Controllers
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
-                Token = "dummy-token",
+                Token = "dummy-token", // Hier komt later een echte JWT
                 PhoneNumber = user.PhoneNumber,
                 Location = user.Location,
                 ProfileImage = user.ProfileImage,
@@ -82,12 +82,11 @@ namespace CampMate.Api.Controllers
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto request)
         {
-            
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)
             {
-                return NotFound("Gebruiker niet gevonden."); 
+                return NotFound("Gebruiker niet gevonden.");
             }
 
             // Is het oude wachtwoord correct?
@@ -106,44 +105,48 @@ namespace CampMate.Api.Controllers
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateProfile(int id, [FromBody] UserUpdateDto updateDto)
         {
-            // 1. Zoek de gebruiker in de database via ID
+            if (updateDto == null) return BadRequest("Er zijn geen gegevens ontvangen.");
+
             var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound("Gebruiker niet gevonden.");
 
-            if (user == null)
-            {
-                return NotFound("Gebruiker niet gevonden.");
-            }
-
-            // 2. Controleer of het nieuwe e-mailadres al in gebruik is door iemand anders
             
-            if (user.Email != updateDto.Email)
+            if (!string.IsNullOrEmpty(updateDto.Email) && user.Email != updateDto.Email)
             {
-                var emailExists = await _context.Users.AnyAsync(u => u.Email == updateDto.Email);
-                if (emailExists)
-                {
+                if (await _context.Users.AnyAsync(u => u.Email == updateDto.Email))
                     return BadRequest("Dit e-mailadres is al in gebruik.");
-                }
+
+                user.Email = updateDto.Email;
             }
 
-            // 3. Update de gegevens
-            user.Name = updateDto.Name;
-            user.Email = updateDto.Email;
-            user.PhoneNumber = updateDto.PhoneNumber;
-            user.Location = updateDto.Location;
+            
+            if (!string.IsNullOrEmpty(updateDto.Name)) user.Name = updateDto.Name;
 
+            
+            user.PhoneNumber = updateDto.PhoneNumber ?? "";
+            user.Location = updateDto.Location ?? "";
+
+            
             if (!string.IsNullOrEmpty(updateDto.ProfileImage))
             {
                 user.ProfileImage = updateDto.ProfileImage;
             }
 
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
+           
+            try
+            {
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                
+                string errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                Console.WriteLine("DB fout: " + errorMessage);
+                return StatusCode(500, "server(DB) fout: " + errorMessage);
+            }
 
-            // 4. Wijzigingen opslaan in de database
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-
-            // 5. Stuur de bijgewerkte gegevens terug (Handig voor de app)
+            
             return Ok(new UserDto
             {
                 Id = user.Id,
@@ -152,7 +155,8 @@ namespace CampMate.Api.Controllers
                 PhoneNumber = user.PhoneNumber,
                 Location = user.Location,
                 ProfileImage = user.ProfileImage,
-                Token = "Token-blijft-hetzelfde"
+                Token = "Token-blijft-hetzelfde",
+                IsAdmin = user.IsAdmin
             });
         }
     }

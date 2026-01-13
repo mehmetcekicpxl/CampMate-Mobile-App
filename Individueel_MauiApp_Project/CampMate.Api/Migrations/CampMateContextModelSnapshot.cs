@@ -37,9 +37,6 @@ namespace CampMate.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsFavorite")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -104,6 +101,29 @@ namespace CampMate.Api.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("CampMate.Api.Models.Favorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CampSiteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CampSiteId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favorites");
+                });
+
             modelBuilder.Entity("CampMate.Api.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -158,6 +178,25 @@ namespace CampMate.Api.Migrations
                 {
                     b.HasOne("CampMate.Api.Models.CampSite", "CampSite")
                         .WithMany("Comments")
+                        .HasForeignKey("CampSiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CampMate.Api.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CampSite");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CampMate.Api.Models.Favorite", b =>
+                {
+                    b.HasOne("CampMate.Api.Models.CampSite", "CampSite")
+                        .WithMany()
                         .HasForeignKey("CampSiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

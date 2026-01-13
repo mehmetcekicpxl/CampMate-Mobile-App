@@ -89,31 +89,28 @@ namespace CampMate.ViewModels
         {
             if (CurrentUser == null) return;
 
-            // 1. Maak het DTO-object klaar met de nieuwe gegevens van het scherm
+           
             var updateDto = new UserUpdateDto
             {
-                Name = CurrentUser.Name,
-                Email = CurrentUser.Email,
-                PhoneNumber = CurrentUser.PhoneNumber,
-                Location = CurrentUser.Location,
-                ProfileImage = CurrentUser.ProfileImage
+                Name = CurrentUser.Name ?? "",
+                Email = CurrentUser.Email ?? "",
+                PhoneNumber = CurrentUser.PhoneNumber ?? "",
+                Location = CurrentUser.Location ?? "",
+                ProfileImage = CurrentUser.ProfileImage 
             };
 
-            // 2. Roep de service aan om de update naar de API te sturen
-            bool success = await _authService.UpdateUserProfileAsync(CurrentUser.Id, updateDto);
+            
+            var result = await _authService.UpdateUserProfileAsync(CurrentUser.Id, updateDto);
 
-            if (success)
+            if (result.IsSuccess)
             {
-                IsEditing = false; 
-                await Application.Current.MainPage.DisplayAlert("Succes", "Je profiel is succesvol bijgewerkt!", "OK");
-
-                
+                IsEditing = false;
+                await Application.Current.MainPage.DisplayAlert("Succesvol", "Je profiel is bijgewerkt!", "OK");
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Fout", "Update mislukt. Controleer je gegevens (bijv. e-mail).", "OK");
-
                 
+                await Application.Current.MainPage.DisplayAlert("Fout", $"Update kon niet worden uitgevoerd:\n{result.ErrorMessage}", "OK");
             }
         }
 

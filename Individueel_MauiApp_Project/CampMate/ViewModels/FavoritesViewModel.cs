@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace CampMate.ViewModels
@@ -13,80 +14,91 @@ namespace CampMate.ViewModels
     public partial class FavoritesViewModel : ObservableObject
     {
         private readonly AuthService _authService;
+        private readonly HttpClient _httpClient;
+
+        [ObservableProperty]
+        private bool _isBusy;
 
         // Lijst met favoriete kampen
         public ObservableCollection<CampSite> FavoriteCamps { get; } = new();
 
-        public FavoritesViewModel(AuthService authService)
+
+        public FavoritesViewModel(AuthService authService, HttpClient httpClient)
         {
             _authService = authService;
-
-           
+            _httpClient = httpClient;
         }
 
-        // --- COMMANDS ---
-
-        [RelayCommand]
-        async Task RemoveFavoriteAsync(CampSite campToRemove)
+        public async Task LoadFavoritesAsync()
         {
-            if (campToRemove == null) return;
-
-            // Verwijder uit UI lijst
-            FavoriteCamps.Remove(campToRemove);
-
-            // Opslaan in opslag
-            await SaveCurrentFavoritesToStorageAsync();
-
-            // Andere pagina's informeren
-            WeakReferenceMessenger.Default.Send(new FavoritesUpdatedMessage(true));
-        }
-
-        // --- HELPERS ---
-
-        public async void LoadFavoritesFromStorageAsync()
-        {
-            FavoriteCamps.Clear();
-
+            if (IsBusy) return;
             try
             {
-                var currentUser = await _authService.GetCurrentUserAsync();
-                if (currentUser == null) return;
+                IsBusy = true;
+                FavoriteCamps.Clear();
 
-                string storageKey = $"Favorites_{currentUser.Email}";
-                string json = await SecureStorage.GetAsync(storageKey);
+                int userId = Preferences.Get("UserId", 0);
 
-                if (!string.IsNullOrEmpty(json))
+                // URL CORRECTIE: "api/campsites" met userId
+                var dtos = await _httpClient.GetFromJsonAsync<List<CampSiteDto>>($"campsites?userId={userId}");
+
+                if (dtos != null)
                 {
-                    var dtos = JsonSerializer.Deserialize<List<CampSiteDto>>(json);
-                    if (dtos != null)
+                    // Filter alleen de favorieten
+                    var favorites = dtos.Where(c => c.IsFavorite).ToList();
+                    var localImages = new List<string> { "kampa.jpg", "kampb.jpg", "bg.jpg", "campmatelogo.png" };
+
+                    foreach (var dto in favorites)
                     {
-                        foreach (var dto in dtos)
+                        if (!string.IsNullOrEmpty(dto.Image) && !dto.Image.StartsWith("http") && !localImages.Contains(dto.Image))
                         {
-                            FavoriteCamps.Add(new CampSite(dto));
+                            dto.Image = $"http://10.0.2.2:5225/images/{dto.Image}";
                         }
+                        FavoriteCamps.Add(new CampSite(dto));
                     }
                 }
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Fout", "Fout bij het laden van favorieten: " + ex.Message, "OK");
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
-        private async Task SaveCurrentFavoritesToStorageAsync()
+        [RelayCommand]
+        async Task RemoveFavoriteAsync(CampSite campToRemove)
         {
+            if (campToRemove == null) return;
+            FavoriteCamps.Remove(campToRemove);
+
             try
             {
-                var currentUser = await _authService.GetCurrentUserAsync();
-                if (currentUser == null) return;
+                int userId = Preferences.Get("UserId", 0);
 
-                string storageKey = $"Favorites_{currentUser.Email}";
-                var dtosToSave = FavoriteCamps.Select(c => c.Data).ToList();
-                string json = JsonSerializer.Serialize(dtosToSave);
+                // Verzoek sturen met userId parameter
+                var response = await _httpClient.PostAsync($"campsites/toggle-favorite/{campToRemove.Data.Id}?userId={userId}", null);
 
-                await SecureStorage.SetAsync(storageKey, json);
+                if (response.IsSuccessStatusCode)
+                {
+                    WeakReferenceMessenger.Default.Send(new FavoritesUpdatedMessage(true));
+                }
+                else
+                {
+                    FavoriteCamps.Add(campToRemove); // Terugzetten bij fout
+                }
             }
-            catch { }
+            catch
+            {
+                FavoriteCamps.Add(campToRemove);
+            }
         }
+
     }
+
+       
+        
+       
 }

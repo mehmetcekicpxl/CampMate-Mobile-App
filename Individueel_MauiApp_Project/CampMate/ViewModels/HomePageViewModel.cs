@@ -17,6 +17,9 @@ namespace CampMate.ViewModels
         private readonly AuthService _authService;
         private readonly HttpClient _httpClient;
 
+        // Geeft aan of er een filter is toegepast
+        public bool IsFilterApplied = false;
+
         // Lijst die op het scherm wordt getoond
         public ObservableCollection<CampSite> CampList { get; } = new();
 
@@ -44,9 +47,9 @@ namespace CampMate.ViewModels
         private void RegisterMessages()
         {
             // Luister naar favorieten updates
-            WeakReferenceMessenger.Default.Register<FavoritesUpdatedMessage>(this, async (r, m) =>
+            WeakReferenceMessenger.Default.Register<FavoritesUpdatedMessage>(this, (r, m) =>
             {
-                await RefreshFavoritesAsync();
+                LoadCampsFromApi();
             });
 
             // Luister naar filtercriteria
@@ -74,40 +77,30 @@ namespace CampMate.ViewModels
             });
         }
 
+        // Haal campings op van de API
         private async void LoadCampsFromApi()
         {
             try
             {
-                var dtos = await _httpClient.GetFromJsonAsync<List<CampSiteDto>>("campsites");
+                // 1. Haal de ID van de ingelogde gebruiker op
+                int userId = Preferences.Get("UserId", 0);
+
+                // 2. Voeg userId toe aan de URL: "campsites?userId=5"
+                var dtos = await _httpClient.GetFromJsonAsync<List<CampSiteDto>>($"campsites?userId={userId}");
 
                 if (dtos != null)
                 {
-                    var localFavorites = await LoadFavoritesFromStorageAsync();
-                    var favoriteNames = localFavorites.Select(f => f.Name).ToHashSet();
-
                     _allCamps.Clear();
                     CampList.Clear();
-
                     var localImages = new List<string> { "kampa.jpg", "kampb.jpg", "bg.jpg", "campmatelogo.png" };
 
                     foreach (var dto in dtos)
                     {
-                        // Afbeelding URL correctie
-                        if (!string.IsNullOrEmpty(dto.Image)
-                            && !dto.Image.StartsWith("http")
-                            && !localImages.Contains(dto.Image))
+                        // Afbeelding URL correctie voor Android Emulator
+                        if (!string.IsNullOrEmpty(dto.Image) && !dto.Image.StartsWith("http") && !localImages.Contains(dto.Image))
                         {
                             dto.Image = $"http://10.0.2.2:5225/images/{dto.Image}";
                         }
-
-                        // Favoriet status instellen
-                        // eerst op false zetten om oude favorieten te wissen daarna controlleren van huide gebruiker is dat die favoriet is
-                        dto.IsFavorite = false;
-                        if (favoriteNames.Contains(dto.Name))
-                        {
-                            dto.IsFavorite = true;
-                        }
-
                         var campModel = new CampSite(dto);
                         _allCamps.Add(campModel);
                         CampList.Add(campModel);
@@ -117,11 +110,46 @@ namespace CampMate.ViewModels
             catch (Exception ex)
             {
                 Console.WriteLine("API Fout: " + ex.Message);
-                await Shell.Current.DisplayAlert("Fout", "Er is een probleem opgetreden tijdens het laden van de gegevens.", "OK");
             }
         }
 
-        // --- COMMANDS ---
+        [RelayCommand]
+        public async Task LoadCamps()
+        {
+            
+            IsFilterApplied = false;
+           
+            LoadCampsFromApi();
+            await Task.CompletedTask;
+        }
+
+        // Favoriet toevoegen of verwijderen
+        [RelayCommand]
+        async Task ToggleFavorite(CampSite camp)
+        {
+            if (camp == null) return;
+
+            // Directe UI feedback
+            camp.IsFavorite = !camp.IsFavorite;
+
+            try
+            {
+                int userId = Preferences.Get("UserId", 0);
+
+                // Geen ingewikkelde headers meer, gewoon userId in de URL
+                var response = await _httpClient.PostAsync($"campsites/toggle-favorite/{camp.Data.Id}?userId={userId}", null);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    camp.IsFavorite = !camp.IsFavorite; 
+                }
+            }
+            catch
+            {
+                camp.IsFavorite = !camp.IsFavorite; 
+            }
+        }
+        
 
         [RelayCommand]
         async Task FilterPageAsync()
@@ -148,16 +176,9 @@ namespace CampMate.ViewModels
             await Shell.Current.GoToAsync(nameof(CampDetailPage), navigationParameter);
         }
 
-        [RelayCommand]
-        void ToggleFavorite(CampSite camp)
-        {
-            if (camp == null) return;
+     
 
-            camp.IsFavorite = !camp.IsFavorite;
-            SaveFavoritesToStorage(_allCamps);
-        }
-
-        // --- HULPMETHODEN ---
+       
 
         private void FilterCamps(string query)
         {
@@ -172,6 +193,9 @@ namespace CampMate.ViewModels
 
         private void ApplyFilter(FilterOptions filters)
         {
+            // Filter toegepast
+            IsFilterApplied = true;
+
             CampList.Clear();
             var filtered = _allCamps.AsEnumerable();
 
@@ -226,67 +250,6 @@ namespace CampMate.ViewModels
             }
         }
 
-        // --- FAVORIETEN BEHEREN (SecureStorage) ---
-
-        private async Task<List<CampSiteDto>> LoadFavoritesFromStorageAsync()
-        {
-            try
-            {
-                var currentUser = await _authService.GetCurrentUserAsync();
-                if (currentUser == null || string.IsNullOrEmpty(currentUser.Email)) return new List<CampSiteDto>();
-
-                string key = $"Favorites_{currentUser.Email}";
-                string json = await SecureStorage.GetAsync(key);
-
-                if (!string.IsNullOrEmpty(json))
-                {
-                    return JsonSerializer.Deserialize<List<CampSiteDto>>(json) ?? new List<CampSiteDto>();
-                }
-            }
-            catch { }
-            return new List<CampSiteDto>();
-        }
-
         
-
-        // Deze methode wordt aangeroepen vanuit HomePage.xaml.cs (OnAppearing)
-        public async Task RefreshFavoritesAsync()
-        {
-            // 1. Haal de actuele favorietenlijst op van de opslag (voor de huidige gebruiker)
-            var updatedFavorites = await LoadFavoritesFromStorageAsync();
-            var favoriteNames = updatedFavorites.Select(f => f.Name).ToHashSet();
-
-            // 2. Loop door de volledige lijst (_allCamps) en reset de status. BELANGRIJK: We zetten IsFavorite op true OF false.   Dit zorgt ervoor dat oude favorieten van de vorige gebruiker worden gewist.
-            
-            foreach (var camp in _allCamps)
-            {
-                camp.IsFavorite = favoriteNames.Contains(camp.Name);
-            }
-
-            // 3. Update ook de zichtbare lijst (CampList)
-            foreach (var camp in CampList)
-            {
-                camp.IsFavorite = favoriteNames.Contains(camp.Name);
-            }
-        }
-
-
-        private async void SaveFavoritesToStorage(List<CampSite> camps)
-        {
-            try
-            {
-                var currentUser = await _authService.GetCurrentUserAsync();
-                var favoriteCamps = camps.Where(c => c.IsFavorite).ToList();
-                var dtosToSave = favoriteCamps.Select(c => c.Data).ToList();
-
-                string key = $"Favorites_{currentUser.Email}";
-                string json = JsonSerializer.Serialize(dtosToSave);
-                await SecureStorage.SetAsync(key, json);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Opslaan favorieten mislukt: " + ex.Message);
-            }
-        }
     }
 }

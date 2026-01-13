@@ -93,20 +93,22 @@ namespace CampMate.ViewModels
                 Camp = initialData;
                 LoadComments();
 
-               
-                var freshData = await _campService.GetCampByIdAsync(initialData.Id);
 
-                if (freshData != null)
-                {
-                    
-                    Camp = freshData;
+                
+                await RefreshCampDataAsync();
+            }
+        }
 
-                    // Bereken de rechten opnieuw (misschien is de beheerdersstatus gewijzigd, enz.)
-                    CalculateCampDeletePermission();
+        private async Task RefreshCampDataAsync()
+        {
+            if (Camp == null) return;
 
-                    // Vernieuw de lijst met reacties met die van de server!
-                    LoadComments();
-                }
+            var freshData = await _campService.GetCampByIdAsync(Camp.Id);
+            if (freshData != null)
+            {
+                Camp = freshData;
+                CalculateCampDeletePermission();
+                LoadComments(); 
             }
         }
 
@@ -133,7 +135,7 @@ namespace CampMate.ViewModels
                 foreach (var c in Camp.Comments)
                 {
 
-                    //bool canDeleteThisComment = (c.UserId == currentUserId) || isAdmin;
+                    
 
                    
                     bool isOwnerOrAdmin = (c.UserId == currentUserId) || isAdmin;
@@ -182,59 +184,26 @@ namespace CampMate.ViewModels
         {
             if (commentItem == null) return;
 
+            
+            if (commentItem.Id == 0)
+            {
+                await Shell.Current.DisplayAlert("Fout", "Ververs de pagina om deze reactie te verwijderen.", "OK");
+                return;
+            }
+
             bool answer = await Shell.Current.DisplayAlert("Verwijder", "Weet je zeker dat je wilt verwijderen?", "Ja", "Nee");
             if (!answer) return;
 
-            // 1. Verwijderen uit backend
             bool success = await _campService.DeleteCommentAsync(commentItem.Id);
 
             if (success)
             {
-                // 2. Visueel verwijderen uit de lijst
+                
                 CommentsList.Remove(commentItem);
+                await Shell.Current.DisplayAlert("Succesvol", "De reactie is verwijderd.", "OK");
 
-              
-
-                int ratingToRemove = 0;
-                string text = commentItem.Text.Trim(); 
-
-                if (text.Contains("ster") && text.Length > 0)
-                {
-                   
-                    string firstChar = text.Substring(0, 1);
-
-                    if (int.TryParse(firstChar, out int parsedRating))
-                    {
-                        ratingToRemove = parsedRating; 
-                    }
-                }
-
-                // Als het verwijderde item een punt is, herstel dan het account.
-                if (ratingToRemove > 0)
-                {
-                    
-                    Camp.TotalStars -= ratingToRemove;
-
-                    
-                    if (Camp.RatingCount > 0) Camp.RatingCount--;
-
-                    
-                    if (Camp.TotalStars < 0) Camp.TotalStars = 0;
-
-                    // Scherm bijwerken
-                    OnPropertyChanged(nameof(Camp));
-
-                    //  Meld het op de startpagina
-
-                    WeakReferenceMessenger.Default.Send(new CampUpdatedMessage(Camp));
-
-                    await Shell.Current.DisplayAlert("Informatie", "De punten zijn teruggenomen.", "OK");
-                }
-                else
-                {
-                    
-                    await Shell.Current.DisplayAlert("Succesvol", "De reactie is verwijderd.", "OK");
-                }
+                // sync met de server
+                await RefreshCampDataAsync();
             }
             else
             {
@@ -242,9 +211,9 @@ namespace CampMate.ViewModels
             }
         }
 
-        
 
-      
+
+
         [RelayCommand]
         async Task SubmitCommentAsync()
         {
@@ -253,26 +222,19 @@ namespace CampMate.ViewModels
             var userDto = await _authService.GetCurrentUserAsync();
             if (userDto == null) return;
 
-            // We geven een beoordeling van 0, omdat dit alleen een opmerking is.
             bool success = await _authService.AddCommentAsync(Camp.Id, userDto.Name, NewCommentText, 0);
 
             if (success)
             {
-                CommentsList.Add(new CommentItemViewModel
-                {
-                    UserName = userDto.Name,
-                    Text = NewCommentText,
-                    UserId = userDto.Id,
-                    CanDeleteComment = true,
-                    
-                });
-
                 NewCommentText = string.Empty;
                 await Shell.Current.DisplayAlert("Succesvol", "Uw opmerking is toegevoegd.", "OK");
+
+                
+                await RefreshCampDataAsync();
             }
         }
 
-       
+
         [RelayCommand]
         async Task SubmitRatingAsync()
         {
@@ -282,38 +244,24 @@ namespace CampMate.ViewModels
                 return;
             }
 
-            int ratingToSend = SelectedRatingIndex + 1; // 0 index = 1 punt
+            int ratingToSend = SelectedRatingIndex + 1;
             var userDto = await _authService.GetCurrentUserAsync();
 
-           
             bool success = await _authService.AddCommentAsync(Camp.Id, userDto.Name, "", ratingToSend);
 
             if (success)
             {
-              
-                Camp.TotalStars += ratingToSend;
-                Camp.RatingCount++;
-
-                // Scherm vernieuwen
-                OnPropertyChanged(nameof(Camp));
+                SelectedRatingIndex = -1;
+                await Shell.Current.DisplayAlert("Bedankt", $" Je hebt {ratingToSend} ster gegeven!", "OK");
 
                 
+                await RefreshCampDataAsync();
+
+               
                 WeakReferenceMessenger.Default.Send(new CampUpdatedMessage(Camp));
-
-              
-                CommentsList.Add(new CommentItemViewModel
-                {
-                    UserName = userDto.Name,
-                    Text = $"{ratingToSend}  ster werd toegekend ★", // Het moet hetzelfde formaat hebben als in de backend.
-                    UserId = userDto.Id,
-                    CanDeleteComment = false,
-                  
-                });
-
-                SelectedRatingIndex = -1; // Keuze resetten
-                await Shell.Current.DisplayAlert("Bedankt", $" Je hebt  {ratingToSend}  ster gegeven!", "OK");
             }
         }
+
 
         [RelayCommand]
         async Task OpenWebsiteAsync()

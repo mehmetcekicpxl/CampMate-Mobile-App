@@ -11,6 +11,8 @@ namespace CampMate.Api.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Favorite> Favorites { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +27,19 @@ namespace CampMate.Api.Data
                 .WithMany()
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+          
+            modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.User)
+                .WithMany()
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Restrict); // Geef een foutmelding of verwijder de gebruiker (breekt de lus)
+
+            modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.CampSite)
+                .WithMany()
+                .HasForeignKey(f => f.CampSiteId)
+                .OnDelete(DeleteBehavior.Cascade); // Als het kamp wordt verwijderd, moet ook de favoriet worden verwijderd.
         }
     }
 }

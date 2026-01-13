@@ -23,23 +23,19 @@ namespace CampMate.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var user = await response.Content.ReadFromJsonAsync<UserDto>();
-
-                    // Als de aanmelding succesvol is, slaan we de gebruiker op in het geheugen.
                     if (user != null)
                     {
                         string userJson = JsonSerializer.Serialize(user);
                         await SecureStorage.SetAsync("CurrentUser", userJson);
 
+                        // Opslaan van UserId in preferences voor eenvoudig gebruik
                         Preferences.Set("UserId", user.Id);
                         Preferences.Set("IsAdmin", user.IsAdmin);
                     }
                     return user;
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Login Fout: {ex.Message}");
-            }
+            catch { }
             return null;
         }
 
@@ -57,8 +53,6 @@ namespace CampMate.Services
             }
         }
 
-
-        // Haal de gegevens van de huidige gebruiker op uit Storage.
         public async Task<UserDto?> GetCurrentUserAsync()
         {
             try
@@ -73,136 +67,89 @@ namespace CampMate.Services
             return null;
         }
 
-        
         public async Task<bool> ChangePasswordAsync(string email, string oldPassword, string newPassword)
         {
             try
             {
-                var dto = new ChangePasswordDto
-                {
-                    Email = email,
-                    OldPassword = oldPassword,
-                    NewPassword = newPassword
-                };
-
+                var dto = new ChangePasswordDto { Email = email, OldPassword = oldPassword, NewPassword = newPassword };
                 var response = await _httpClient.PostAsJsonAsync("auth/change-password", dto);
                 return response.IsSuccessStatusCode;
             }
-            catch
-            {
-                return false;
-            }
+            catch { return false; }
         }
 
-        public void Logout()
-        {
-            SecureStorage.Remove("CurrentUser");
-        }
-
-
-        // Methode om gebruikersprofiel bij te werken
-        public async Task<bool> UpdateUserProfileAsync(int userId, UserUpdateDto updateData)
+       
+        public async Task<(bool IsSuccess, string ErrorMessage)> UpdateUserProfileAsync(int userId, UserUpdateDto updateData)
         {
             try
             {
-                // 1. Stuur een PUT-verzoek naar de API (Database update)
+               
                 var response = await _httpClient.PutAsJsonAsync($"auth/update/{userId}", updateData);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    
-
                    
-                    // We halen de huidige opgeslagen gebruiker op.
-                    
-                    var json = await SecureStorage.GetAsync("CurrentUser");
 
+                    // Werk ook de gebruiker in het telefoongeheugen (SecureStorage) bij, zodat hij niet hoeft uit te loggen en weer in te loggen.
+                    var json = await SecureStorage.GetAsync("CurrentUser");
                     if (!string.IsNullOrEmpty(json))
                     {
                         var userDto = JsonSerializer.Deserialize<UserDto>(json);
-
                         if (userDto != null)
                         {
-                            
                             userDto.Name = updateData.Name;
                             userDto.Email = updateData.Email;
                             userDto.PhoneNumber = updateData.PhoneNumber;
                             userDto.Location = updateData.Location;
 
-                            // De bijgewerkte gebruiker terug opslaan in SecureStorage  de app de nieuwe gegevens direct ziet zonder uit te loggen.
+                            
+                            if (!string.IsNullOrEmpty(updateData.ProfileImage))
+                                userDto.ProfileImage = updateData.ProfileImage;
 
                             var newJson = JsonSerializer.Serialize(userDto);
                             await SecureStorage.SetAsync("CurrentUser", newJson);
                         }
                     }
 
-                    return true;
+                    
+                    return (true, null);
                 }
                 else
                 {
-                    // Foutmelding lezen
-                    var errorMsg = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Update fout: {errorMsg}");
-                    return false;
+                   
+                    string errorContent = await response.Content.ReadAsStringAsync();
+
+                   
+                    return (false, errorContent);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Er is een fout opgetreden tijdens het updaten: {ex.Message}");
-                return false;
+                // Als er geen internetverbinding is of als de server uitgeschakeld is 
+                return (false, $"Verbindingsfout: {ex.Message}");
             }
         }
 
-
-        // Methode om een reactie te posten
-        public async Task<bool> AddCommentAsync(int campId, string userName, string text, int rating)
+        
+        public void Logout()
         {
-            try
-            {
-                int currentUserId = Preferences.Get("UserId", 0);
-
-                var commentDto = new CreateCommentDto
-                {
-                    CampSiteId = campId,
-                    UserName = userName,
-                    Text = text,
-                    UserId = currentUserId,
-                    Rating =rating
-                };
-
-                // Stuur POST request naar de API
-                var response = await _httpClient.PostAsJsonAsync("campsites/comments", commentDto);
-
-                return response.IsSuccessStatusCode;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Fout bij het plaatsen van reactie: {ex.Message}");
-                return false;
-            }
+            SecureStorage.Remove("CurrentUser");
+            Preferences.Clear();
         }
 
-
-        // Methode om foto te uploaden
+      
         public async Task<string?> UploadImageAsync(FileResult fileResult)
         {
             try
             {
-               
                 var stream = await fileResult.OpenReadAsync();
-
-               
                 var content = new MultipartFormDataContent();
-
-               
                 content.Add(new StreamContent(stream), "file", fileResult.FileName);
 
-               
                 var response = await _httpClient.PostAsync("upload", content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    
                     var result = await response.Content.ReadFromJsonAsync<JsonElement>();
                     return result.GetProperty("imageName").GetString();
                 }
@@ -211,8 +158,33 @@ namespace CampMate.Services
             {
                 Console.WriteLine($"Upload fout: {ex.Message}");
             }
+            return null;
+        }
 
-            return null; 
+        public async Task<bool> AddCommentAsync(int campId, string userName, string text, int rating)
+        {
+            try
+            {
+               
+                int currentUserId = Preferences.Get("UserId", 0);
+
+                var commentDto = new CreateCommentDto
+                {
+                    CampSiteId = campId,
+                    UserName = userName,
+                    Text = text,
+                    UserId = currentUserId,
+                    Rating = rating
+                };
+
+                var response = await _httpClient.PostAsJsonAsync("campsites/comments", commentDto);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Comment fout: {ex.Message}");
+                return false;
+            }
         }
     }
 }

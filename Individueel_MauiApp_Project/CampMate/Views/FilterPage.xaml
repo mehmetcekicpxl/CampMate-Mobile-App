@@ -9,7 +9,7 @@
             <Label Text="Select Location" FontAttributes="Bold"/>
 
             <Picker ItemsSource="{Binding Locations}"
-                    SelectedItem="{Binding SelectedLocation}"
+                    SelectedItem="{Binding SelectedLocation,Mode=TwoWay}"
                     Title="Kies een locatie">
             </Picker>
 
