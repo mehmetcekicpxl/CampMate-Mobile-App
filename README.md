@@ -5,18 +5,59 @@ Student: Mehmet Cekic
 
 Email: Mehmet.cekic@student.pxl.be
 
-# [CampMate]
+# CampMate
 ## Beschrijving
-[Maak hier een korte maar duidelijk beschrijving van je applicatie]
+CampMate is een mobiele applicatie ontwikkeld met .NET MAUI, bedoeld voor kampeerliefhebbers. Gebruikers kunnen campings zoeken, details bekijken, favorieten beheren en hun ervaringen delen via reacties en beoordelingen. De app maakt verbinding met een ASP.NET Core Web API backend en gebruikt een SQL-database voor het opslaan van gegevens.
 
 ## Features
-[Voeg hier een lijst toe van de belangrijkste features van je applicatie]
+Authenticatie: Registreren en inloggen op basis van UserID-verificatie (eenvoudige implementatie voor demonstratiedoeleinden).
+
+Home Dashboard: Een overzicht van alle campings met zoekfunctie.
+
+Filters: Geavanceerd filteren op locatie (bijv. Antwerpen, Limburg) en faciliteiten (Zwembad, Wifi, etc.).
+
+Favorieten: Gebruikers kunnen campings liken. Deze worden opgeslagen in de database en zijn gekoppeld aan het unieke ID van de gebruiker.
+
+Details & Reviews: Gedetailleerde informatie per camping, inclusief de mogelijkheid om reacties te plaatsen en een sterrenbeoordeling (1-5) te geven.
+
+Profielbeheer: Gebruikers kunnen hun profielgegevens (Naam, Email, Telefoon) bewerken en een profielfoto uploaden via de media picker.
+
+Admin Rechten: Admins hebben de bevoegdheid om ongepaste reacties of campings te verwijderen.
+
+Foutafhandeling: Gebruiksvriendelijke foutmeldingen en validatie bij het invoeren van gegevens.
 
 ## Screenshots
-[Toon hier minstens 5 nuttige screenshots van je applicatie.]
+<img width="515" height="1142" alt="campmate1" src="https://github.com/user-attachments/assets/5cdfea69-7fc6-4c02-87e7-9803b5452537" />
+<img width="515" height="1139" alt="campmate2" src="https://github.com/user-attachments/assets/7ca3ad30-b381-404b-807d-fa2b136d9e6e" />
+<img width="515" height="1144" alt="campmate3" src="https://github.com/user-attachments/assets/c732bd0c-4d33-48b7-83e2-36a78c115ab9" />
+<img width="515" height="1144" alt="campmate4" src="https://github.com/user-attachments/assets/57af1b18-3c7e-4a19-9aba-294dfd7671e8" />
+<img width="515" height="1142" alt="campmate5" src="https://github.com/user-attachments/assets/a7a62825-f88c-45ad-809b-51fda8e741dc" />
+<img width="515" height="1141" alt="campmate6" src="https://github.com/user-attachments/assets/f1af31e3-e3e2-48f4-86f5-e525577c548d" />
+<img width="515" height="1144" alt="campmate7" src="https://github.com/user-attachments/assets/40a392d9-ae1e-4923-a270-4d7e603678a3" />
+<img width="515" height="1147" alt="campmate8" src="https://github.com/user-attachments/assets/aa90b0b8-d43c-407d-ac3a-6e9bbd3f90f1" />
+<img width="515" height="1151" alt="campmate9" src="https://github.com/user-attachments/assets/ed59eda0-115f-439b-9e68-91d0cb36933d" />
+<img width="515" height="1142" alt="campmate10" src="https://github.com/user-attachments/assets/dabb6575-2b9f-41d3-af08-6eb11bd521a6" />
+<img width="515" height="1142" alt="campmate11" src="https://github.com/user-attachments/assets/500e15c1-a3a7-4785-b9c2-4d4be3c66c9c" />
+<img width="515" height="1141" alt="campmate12" src="https://github.com/user-attachments/assets/df5e431c-27f0-4d53-b3ae-d1c638ab42bd" />
+<img width="515" height="1139" alt="campmate13" src="https://github.com/user-attachments/assets/0bdb9e58-9845-46fa-b347-bbc881873a68" />
+<img width="515" height="1145" alt="campmate14" src="https://github.com/user-attachments/assets/ad63bd1a-b6ed-4524-9f1a-11f36e9238a9" />
+<img width="515" height="1145" alt="campmate15" src="https://github.com/user-attachments/assets/4ac55db8-c7ba-4be7-b7be-c6d8eebe8c1e" />
+<img width="515" height="1142" alt="campmate16" src="https://github.com/user-attachments/assets/d95936f8-088b-4f55-9053-7b5c531caad3" />
+<img width="515" height="1144" alt="campmate17" src="https://github.com/user-attachments/assets/f620eaea-0697-4ec4-8b1f-45c21c066fc0" />
+<img width="515" height="1144" alt="splashscreen" src="https://github.com/user-attachments/assets/8fd08ebe-f1e3-449d-a78b-6856eaf6dc2e" />
+
+
+
+
 
 ## Screencast
-[Voeg een link toe naar de screencast van je applicatie. Zorg dat zoveel mogelijk features getoond worden!]
+https://www.youtube.com/watch?v=dePFkOW7hDw
 
 ## Bronnen
-[Vermeld hier welke bronnen je gebruikt hebt en waarvoor je deze precies gebruikt hebt.]
+Cursusmateriaal Mobile Development (PXL).
+
+Microsoft Documentatie (.NET MAUI & ASP.NET Core).
+
+Community Toolkit MVVM voor databinding en messaging.
+
+Eigen onderzoek voor specifieke bugfixes (zoals Android emulator netwerkconfiguratie en DTO validaties).
