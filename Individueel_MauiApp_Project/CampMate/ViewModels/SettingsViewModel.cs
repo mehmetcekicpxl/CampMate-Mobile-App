@@ -8,6 +8,7 @@ namespace CampMate.ViewModels
     public partial class SettingsViewModel : ObservableObject
     {
         private readonly AuthService _authService;
+        private readonly HttpClient _httpClient;
 
         // Wachtwoord formulier zichtbaarheid
         [ObservableProperty]
@@ -27,16 +28,17 @@ namespace CampMate.ViewModels
         [ObservableProperty]
         private bool _isDarkMode;
 
-        public SettingsViewModel(AuthService authService)
+        public SettingsViewModel(AuthService authService, HttpClient httpClient)
         {
             _authService = authService;
 
             // Huidige thema status ophalen
             IsDarkMode = Application.Current?.UserAppTheme == AppTheme.Dark;
+            _httpClient = httpClient;
         }
 
         // --- DARK MODE COMMAND ---
-        // Switch toggled event yerine bu command'i kullanabiliriz veya PropertyChanged
+       
         partial void OnIsDarkModeChanged(bool value)
         {
             if (Application.Current != null)
@@ -102,7 +104,7 @@ namespace CampMate.ViewModels
         async Task GoToFavoritesAsync()
         {
             // Navigeren naar Favorieten pagina
-            var viewModel = new FavoritesViewModel(_authService);
+            var viewModel = new FavoritesViewModel(_authService,_httpClient);
             await Application.Current.MainPage.Navigation.PushAsync(new FavoritesPage(viewModel));
         }
 

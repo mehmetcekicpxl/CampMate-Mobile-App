@@ -11,7 +11,7 @@ namespace CampMate.Api.Models
         public string Facilities { get; set; }
         public int Price { get; set; }
         public string Image { get; set; }
-        public bool IsFavorite { get; set; } = false;
+       
 
         // Rating
         public double TotalStars { get; set; }

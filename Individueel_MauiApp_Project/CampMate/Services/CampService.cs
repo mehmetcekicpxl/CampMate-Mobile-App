@@ -12,7 +12,38 @@ namespace CampMate.Services
             _httpClient = httpClient;
         }
 
-       
+      
+        public async Task<List<CampSiteDto>> GetCampsAsync()
+        {
+            try
+            {
+                
+                var camps = await _httpClient.GetFromJsonAsync<List<CampSiteDto>>("campsites");
+                return camps ?? new List<CampSiteDto>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lijstfout: {ex.Message}");
+                return new List<CampSiteDto>();
+            }
+        }
+
+        
+        public async Task<bool> ToggleFavoriteAsync(int campId)
+        {
+            try
+            {
+                
+                var response = await _httpClient.PostAsync($"campsites/toggle-favorite/{campId}", null);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Favoriete fout: {ex.Message}");
+                return false;
+            }
+        }
+
         public async Task<CampSiteDto?> AddCampAsync(CampSiteDto campDto)
         {
             try
