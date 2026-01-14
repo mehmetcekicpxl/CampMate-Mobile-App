@@ -1,30 +1,23 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/ZmnpLZnF)
 # C# Mobile - Individuele opdracht
 
-Student: Mehmet Cekic
+**Student:** Mehmet Cekic  
+**Email:** Mehmet.cekic@student.pxl.be
 
-Email: Mehmet.cekic@student.pxl.be
-
-# CampMate
+# CampMate Mobil App
 ## Beschrijving
 CampMate is een mobiele applicatie ontwikkeld met .NET MAUI, bedoeld voor kampeerliefhebbers. Gebruikers kunnen campings zoeken, details bekijken, favorieten beheren en hun ervaringen delen via reacties en beoordelingen. De app maakt verbinding met een ASP.NET Core Web API backend en gebruikt een SQL-database voor het opslaan van gegevens.
 
 ## Features
-Authenticatie: Registreren en inloggen op basis van UserID-verificatie (eenvoudige implementatie voor demonstratiedoeleinden).
 
-Home Dashboard: Een overzicht van alle campings met zoekfunctie.
-
-Filters: Geavanceerd filteren op locatie (bijv. Antwerpen, Limburg) en faciliteiten (Zwembad, Wifi, etc.).
-
-Favorieten: Gebruikers kunnen campings liken. Deze worden opgeslagen in de database en zijn gekoppeld aan het unieke ID van de gebruiker.
-
-Details & Reviews: Gedetailleerde informatie per camping, inclusief de mogelijkheid om reacties te plaatsen en een sterrenbeoordeling (1-5) te geven.
-
-Profielbeheer: Gebruikers kunnen hun profielgegevens (Naam, Email, Telefoon) bewerken en een profielfoto uploaden via de media picker.
-
-Admin Rechten: Admins hebben de bevoegdheid om ongepaste reacties of campings te verwijderen.
-
-Foutafhandeling: Gebruiksvriendelijke foutmeldingen en validatie bij het invoeren van gegevens.
+* **Authenticatie:** Registreren en inloggen op basis van UserID-verificatie (eenvoudige implementatie voor demonstratiedoeleinden).
+* **Home Dashboard:** Een overzicht van alle campings met zoek-, filter- en nieuwe kamptoevoegingsfuncties.
+* **Filters:** Geavanceerd filteren op locatie (bijv. Antwerpen, Limburg) en faciliteiten (Zwembad, Wifi, etc.).
+* **Favorieten:** Gebruikers kunnen campings liken. Deze worden opgeslagen in de database en zijn gekoppeld aan het unieke ID van de gebruiker.
+* **Details & Reviews:** Gedetailleerde informatie per camping, inclusief de mogelijkheid om reacties te plaatsen en een sterrenbeoordeling (1-5) te geven.
+* **Profielbeheer:** Gebruikers kunnen hun profielgegevens (Naam, Email, Telefoon) bewerken en een profielfoto uploaden via de media picker.
+* **Admin Rechten:** Admins hebben de bevoegdheid om ongepaste reacties of campings te verwijderen.
+* **Foutafhandeling:** Gebruiksvriendelijke foutmeldingen en validatie bij het invoeren van gegevens.
 
 ## Screenshots
 <img width="515" height="1142" alt="campmate1" src="https://github.com/user-attachments/assets/5cdfea69-7fc6-4c02-87e7-9803b5452537" />
@@ -54,10 +47,25 @@ Foutafhandeling: Gebruiksvriendelijke foutmeldingen en validatie bij het invoere
 https://youtu.be/k9cL0mK6iKE
 
 ## Bronnen
-Cursusmateriaal Mobile Development (PXL).
 
-Microsoft Documentatie (.NET MAUI & ASP.NET Core).
+### 1. Documentatie & Cursusmateriaal
+* **PXL Cursusmateriaal:** Slide decks, video's en oefeningen van het vak Mobile Development (C#).
+* **Microsoft Learn (.NET MAUI):** Officiële documentatie geraadpleegd voor XAML controls (zoals `CollectionView`, `Border`), pagina-navigatie (`Shell`) en data binding.
+* **Microsoft Learn (ASP.NET Core):** Gebruikt voor het opzetten van de RESTful Web API, Controllers en Dependency Injection.
 
-Community Toolkit MVVM voor databinding en messaging.
+### 2. Gebruikte Bibliotheken (NuGet Packages)
+* **CommunityToolkit.Mvvm:** Essentieel voor het MVVM-patroon. Gebruikt voor:
+    * `[ObservableProperty]` en `[RelayCommand]` om boilerplate code te verminderen.
+    * `WeakReferenceMessenger` voor communicatie tussen ViewModels (bijv. bij het updaten van de favorietenlijst).
+* **System.Net.Http.Json:** Voor het vereenvoudigen van asynchrone HTTP-aanroepen (GET, POST, PUT, DELETE) en JSON-serialisatie tussen de app en de API.
+* **Microsoft.EntityFrameworkCore:** Voor de interactie met de SQL-database (Code-First approach en migraties).
 
-Eigen onderzoek voor specifieke bugfixes (zoals Android emulator netwerkconfiguratie en DTO validaties).
+### 3. UI & Design
+* **Material Design Icons (MDI):** Gebruikt voor de visuele elementen zoals de hartjes (favorieten), sterren (rating) en prullenbak-iconen via een custom font bestand.
+* **Android MediaPicker:** Implementatie voor het selecteren van foto's uit de galerij van het toestel.
+
+### 4. Specifieke Technische Oplossingen & Onderzoek
+* **Android Emulator Networking:** Onderzoek naar de `http://10.0.2.2` alias om verbinding te maken met de lokale `localhost` API vanuit de Android-omgeving.
+* **Data Persistentie:** Gebruik van `SecureStorage` en `Preferences` om gebruikerssessies (UserID) lokaal te bewaren zodat gebruikers niet telkens opnieuw hoeven in te loggen.
+* **Bestandsuploads:** Implementatie van `MultipartFormDataContent` om profielfoto's correct naar de backend te sturen.
+* **Validatie:** Oplossen van DTO-validatieproblemen (zoals nullable velden voor profielafbeeldingen) om `400 Bad Request` fouten te voorkomen.
