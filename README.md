@@ -51,7 +51,7 @@ Foutafhandeling: Gebruiksvriendelijke foutmeldingen en validatie bij het invoere
 
 
 ## Screencast
-https://www.youtube.com/watch?v=dePFkOW7hDw
+https://youtu.be/k9cL0mK6iKE
 
 ## Bronnen
 Cursusmateriaal Mobile Development (PXL).
