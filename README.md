@@ -19,6 +19,18 @@ CampMate is een mobiele applicatie ontwikkeld met .NET MAUI, bedoeld voor kampee
 * **Admin Rechten:** Admins hebben de bevoegdheid om ongepaste reacties of campings te verwijderen.
 * **Foutafhandeling:** Gebruiksvriendelijke foutmeldingen en validatie bij het invoeren van gegevens.
 
+## Technische Architectuur
+
+<details>
+<summary><b>Klik hier om het Entity Relationship Diagram (ERD) te bekijken</b></summary>
+
+Hieronder ziet u het databasemodel inclusief relaties (Users, Campsites, Comments, Favorites):
+
+<img width="582" height="732" alt="screenshot21" src="https://github.com/user-attachments/assets/e6d5c09b-476a-450b-8674-4444da5630ca" />
+
+
+</details>
+
 ## Screenshots
 <img width="515" height="1142" alt="campmate1" src="https://github.com/user-attachments/assets/5cdfea69-7fc6-4c02-87e7-9803b5452537" />
 <img width="515" height="1139" alt="campmate2" src="https://github.com/user-attachments/assets/7ca3ad30-b381-404b-807d-fa2b136d9e6e" />
