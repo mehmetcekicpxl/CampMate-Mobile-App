@@ -38,6 +38,9 @@ Hieronder ziet u het databasemodel inclusief relaties (Users, Campsites, Comment
 <img width="515" height="1144" alt="campmate4" src="https://github.com/user-attachments/assets/57af1b18-3c7e-4a19-9aba-294dfd7671e8" />
 <img width="515" height="1142" alt="campmate5" src="https://github.com/user-attachments/assets/a7a62825-f88c-45ad-809b-51fda8e741dc" />
 <img width="515" height="1141" alt="campmate6" src="https://github.com/user-attachments/assets/f1af31e3-e3e2-48f4-86f5-e525577c548d" />
+<img width="515" height="1178" alt="campmate18" src="https://github.com/user-attachments/assets/c57af4ad-3ea0-477d-8e4d-fb434e2a3d4e" />
+
+<img width="515" height="1178" alt="campmate19" src="https://github.com/user-attachments/assets/1546d494-0852-453c-8e4d-44d755ab7e65" />
 <img width="515" height="1144" alt="campmate7" src="https://github.com/user-attachments/assets/40a392d9-ae1e-4923-a270-4d7e603678a3" />
 <img width="515" height="1147" alt="campmate8" src="https://github.com/user-attachments/assets/aa90b0b8-d43c-407d-ac3a-6e9bbd3f90f1" />
 <img width="515" height="1151" alt="campmate9" src="https://github.com/user-attachments/assets/ed59eda0-115f-439b-9e68-91d0cb36933d" />
@@ -49,6 +52,8 @@ Hieronder ziet u het databasemodel inclusief relaties (Users, Campsites, Comment
 <img width="515" height="1145" alt="campmate15" src="https://github.com/user-attachments/assets/4ac55db8-c7ba-4be7-b7be-c6d8eebe8c1e" />
 <img width="515" height="1142" alt="campmate16" src="https://github.com/user-attachments/assets/d95936f8-088b-4f55-9053-7b5c531caad3" />
 <img width="515" height="1144" alt="campmate17" src="https://github.com/user-attachments/assets/f620eaea-0697-4ec4-8b1f-45c21c066fc0" />
+
+
 <img width="515" height="1144" alt="splashscreen" src="https://github.com/user-attachments/assets/8fd08ebe-f1e3-449d-a78b-6856eaf6dc2e" />
 
 
