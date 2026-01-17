@@ -92,11 +92,11 @@
 
                 <Button Text="Wijzigingen Opslaan" Command="{Binding SaveChangesCommand}"
                         IsVisible="{Binding IsEditing}"
-                        BackgroundColor="#6B9080" TextColor="White" CornerRadius="10" HeightRequest="50" />
+                        Style="{StaticResource OpslaanButtonStyle}" />
 
                 <Button Text="Annuleren" Command="{Binding CancelEditCommand}"
                         IsVisible="{Binding IsEditing}"
-                        BackgroundColor="#9FA09B" TextColor="White" CornerRadius="10" HeightRequest="50" />
+                        Style="{StaticResource AnnulerenButtonStyle}" />
             </StackLayout>
         </Grid>
     </ScrollView>

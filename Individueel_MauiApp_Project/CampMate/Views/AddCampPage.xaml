@@ -66,10 +66,7 @@
             </Border>
 
             <Button Text="Camping Toevoegen"
-                    BackgroundColor="#6BC38C"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"
+                    Style="{StaticResource OpslaanButtonStyle}"
                     Command="{Binding SaveCampCommand}"
                     IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"/>
         </VerticalStackLayout>
