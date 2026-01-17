@@ -263,7 +263,9 @@ namespace CampMate.ViewModels
         }
 
 
-        [RelayCommand]
+       
+
+       [RelayCommand]
         async Task OpenWebsiteAsync()
         {
             if (string.IsNullOrWhiteSpace(Camp?.WebsiteUrl)) return;
@@ -271,18 +273,20 @@ namespace CampMate.ViewModels
             try
             {
                 string url = Camp.WebsiteUrl;
-                
-                if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+        
+       
+                if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) && 
+                    !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
                 {
                     url = "https://" + url;
                 }
 
-                
-                await Browser.Default.OpenAsync(url, BrowserLaunchMode.SystemPreferred);
+       
+                await Launcher.Default.OpenAsync(new Uri(url));
             }
-            catch
+            catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Fout", "De link kan niet worden geopend.", "OK");
+                await Shell.Current.DisplayAlert("Fout", $"De link kan niet worden geopend: {ex.Message}", "OK");
             }
         }
     }
