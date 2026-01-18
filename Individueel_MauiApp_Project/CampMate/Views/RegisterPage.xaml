@@ -4,7 +4,8 @@
              xmlns:behaviors="clr-namespace:CampMate.Behaviors"
              x:Class="CampMate.Views.RegisterPage"
              Style="{StaticResource InternalPageStyle}"
-             Title="Register">
+             Title="Register"
+             Shell.FlyoutBehavior="Disabled">
     <Grid>
        
 

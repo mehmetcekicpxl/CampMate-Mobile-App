@@ -3,7 +3,8 @@
              xmlns:behaviors="clr-namespace:CampMate.Behaviors"
              x:Class="CampMate.Views.LoginPage"
              Title="Login"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled">
     <Grid>
 
         <Image Source="bg.jpg" 
